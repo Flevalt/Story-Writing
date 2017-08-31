@@ -78,10 +78,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\ArrowMove.cs" />
+    <Compile Include="Assets\Scripts\Controller.cs" />
+    <Compile Include="Assets\Scripts\LoadScene.cs" />
+    <Compile Include="Assets\Scripts\MenuColor.cs" />
     <Compile Include="Assets\Scripts\Name_OnOff.cs" />
     <Compile Include="Assets\Scripts\Novel.cs" />
+    <Compile Include="Assets\Scripts\Quit.cs" />
+    <Compile Include="Assets\Scripts\SpdDown.cs" />
+    <Compile Include="Assets\Scripts\SpdUp.cs" />
     <Compile Include="Assets\Scripts\TextBox_OnOff.cs" />
     <Compile Include="Assets\Scripts\TextWrite.cs" />
+    <Compile Include="Assets\Scripts\TitleWrite.cs" />
+    <Compile Include="Assets\Scripts\getF.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

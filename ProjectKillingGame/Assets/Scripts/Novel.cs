@@ -5,12 +5,13 @@ using UnityEngine;
 public class Novel : MonoBehaviour {
 
     public string[] currentCh; //all text of the current chapter for loading by external classes
-    public int savedIndex; //current chapter saved as integer
-    private string[] Ch1 = new string[10];
-    private string[] Ch2 = new string[10];
-    private string[] Ch3 = new string[10];
-    private string[] Ch4 = new string[10];
-    private string[] Ch5 = new string[10];
+    public int savedIndex = 1; //current chapter saved as integer
+    private int currentLine = -1;
+    private string[] Ch1 = new string[200];
+    private string[] Ch2 = new string[200];
+    private string[] Ch3 = new string[200];
+    private string[] Ch4 = new string[200];
+    private string[] Ch5 = new string[200];
 
     // Use this for initialization
     void Start ()
@@ -27,13 +28,24 @@ public class Novel : MonoBehaviour {
     {
         if(index == 1)
         {
-            Ch1[0] = "Although this dwarf resembles our home planet, it is a far more hostile place.";
-            Ch1[1] = "and line2";
-            Ch1[2] = "or line3";
-            Ch1[3] = "why line4";
-            Ch1[4] = "hmm line5";
-            Ch1[5] = "well line6";
-            Ch1[6] = "sure, line7";
+            Ch1[0] = "Earth. \nThe only planet with the right conditions for life to form, that we know of.";
+            Ch1[1] = "Right now, there are billions of people living on this dwarf of a planet among dozens of other lifeforms. All of them living out their fleeting lives.";
+            Ch1[2] = "It didn't always used to look like this.";
+            Ch1[3] = "The land we step on now used to be lava flowing around the surface. With close to no oxygen, it was nothing but a hostile molten sphere.";
+            Ch1[4] = "And even now, that place is still there. A molten core, deep down into the Earth.";
+            Ch1[5] = "In a way, you could say the Earth we know is nothing but a facade. Beautiful and lively on the outside, but its fiery and dangerous inner self still dormant inside.";
+            Ch1[6] = "It makes you wonder for how long a place like Earth can last. And sometimes I wonder...";
+            Ch1[7] = "...how many people can a small planet like Earth take?";
+            Ch1[8] = "";
+            Ch1[9] = "";
+            Ch1[10] = "";
+            Ch1[11] = "";
+            Ch1[12] = "";
+            Ch1[13] = "";
+            Ch1[14] = "";
+            Ch1[15] = "";
+            Ch1[16] = "";
+            Ch1[17] = "";
 
             return Ch1;
         }
@@ -62,6 +74,16 @@ public class Novel : MonoBehaviour {
 
             return Ch5;
         }
+    }
+
+    public int getCurrentLine()
+    {
+        return currentLine;
+    }
+
+    public void setCurrentLine(int i)
+    {
+        currentLine = i;
     }
 
 }
