@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class TextWrite : MonoBehaviour {
 
     public Novel novel; //External script of Novel
+    public Controller controller;
     private string[] currCh; //Currently loaded Chapter
     public Text textbox; //Textbox element
     public bool run; // turns true while text is being written in the textbox
@@ -18,8 +19,8 @@ public class TextWrite : MonoBehaviour {
         currCh = novel.getCurrentCh(novel.savedIndex); //loads chapter
     }
 
-    public void attemptWriting() {
-        if (GameObject.Find("BG1").GetComponent<SpriteRenderer>().color.a == 1f && run == false) //Check every frame if in middle of chapter, otherwise do not read
+    public void attemptWriting(int i) {
+        if (GameObject.Find("BG" + i).GetComponent<SpriteRenderer>().color.a == 1f && run == false) //Check every frame if in middle of chapter, otherwise do not read
         {
             run = true;
             StartCoroutine(ReadChapter(textbox.text, novel.getCurrentLine()+1, novel.getCurrentCh(novel.savedIndex))); //reads chapter lines with selected textbox, current line and current chapter content
@@ -34,7 +35,7 @@ public class TextWrite : MonoBehaviour {
                 started = true;
                 GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
                 textbox.text = "";
-                attemptWriting();
+                attemptWriting(controller.currentBG); //name each BG after the linenumber
             }
     }
 

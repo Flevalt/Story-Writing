@@ -87,6 +87,8 @@
     <Compile Include="Assets\Scripts\Quit.cs" />
     <Compile Include="Assets\Scripts\SpdDown.cs" />
     <Compile Include="Assets\Scripts\SpdUp.cs" />
+    <Compile Include="Assets\Scripts\SpriteCon.cs" />
+    <Compile Include="Assets\Scripts\SwitchName.cs" />
     <Compile Include="Assets\Scripts\TextBox_OnOff.cs" />
     <Compile Include="Assets\Scripts\TextWrite.cs" />
     <Compile Include="Assets\Scripts\TitleWrite.cs" />

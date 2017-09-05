@@ -41,12 +41,21 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: top
+  - name: UI-top
     uniqueID: 2720568837
     locked: 0
-  - name: mid
+  - name: UI-bot
     uniqueID: 3171578985
     locked: 0
-  - name: bottom
+  - name: Char-top
     uniqueID: 4156479973
+    locked: 0
+  - name: Char-bot
+    uniqueID: 2051889433
+    locked: 0
+  - name: BG-top
+    uniqueID: 1935984335
+    locked: 0
+  - name: BG-bot
+    uniqueID: 4249449239
     locked: 0

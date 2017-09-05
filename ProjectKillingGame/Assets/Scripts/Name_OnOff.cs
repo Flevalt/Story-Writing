@@ -6,11 +6,12 @@ using UnityEngine.UI;
 public class Name_OnOff : MonoBehaviour {
 
     public Button ObjectToDisable;
+    private string NameToSwitch;
 
 	// Enable or Disable in Start()
 	void Start ()
     {
-        ObjectToDisable = GameObject.Find("NameBox").GetComponent<UnityEngine.UI.Button>();
+        ObjectToDisable = GameObject.Find("NameBox").GetComponent<Button>();
     }
 
     // Enable interaction
@@ -24,5 +25,16 @@ public class Name_OnOff : MonoBehaviour {
     {
         ObjectToDisable.interactable = false;
         GameObject.Find("NameBox").SetActive(false);
+    }
+
+    public void switchName(string name)
+    {
+        GameObject.Find("T8").GetComponent<Text>().text = name; // change name on display
+        NameToSwitch = name; // save name in the class
+    }
+
+    public string getName()
+    {
+        return NameToSwitch;
     }
 }
