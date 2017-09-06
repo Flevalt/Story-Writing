@@ -174,4 +174,12 @@ public class Controller : MonoBehaviour {
         GameObject.Find("Char2").GetComponentInChildren<Image>().sprite = spriteCon.c2;
     }
 
+    public int getChar1() {
+        return Char1;
+    }
+
+    public int getChar2()
+    {
+        return Char2;
+    }
 }
