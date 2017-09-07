@@ -881,7 +881,9 @@ MonoBehaviour:
   control: {fileID: 1788487201}
   textwr: {fileID: 266908278}
   savefilesprite: {fileID: 21300000, guid: 5cac9a2bc92707c42ada72fd393fdca7, type: 3}
+  singlesave: {fileID: 1048222630}
   content: {fileID: 993388129}
+  firstbuttoncreated: 0
 --- !u!1 &419252251
 GameObject:
   m_ObjectHideFlags: 0
@@ -1821,7 +1823,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00131fc02dcc22b4e9356eea2cd8df02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewport: {fileID: 0}
+  savefile: {fileID: 1048222631}
+  save: {fileID: 403528666}
+  viewport: {fileID: 629009335}
+  savefilesprite: {fileID: 21300000, guid: 5cac9a2bc92707c42ada72fd393fdca7, type: 3}
+  content: {fileID: 993388129}
 --- !u!1 &932414318
 GameObject:
   m_ObjectHideFlags: 0
@@ -2061,9 +2067,49 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: 415}
+  m_AnchoredPosition: {x: 0.000009045005, y: 0}
+  m_SizeDelta: {x: 20, y: 365}
   m_Pivot: {x: 0, y: 1}
+--- !u!1 &1048222630
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1048222632}
+  - component: {fileID: 1048222631}
+  m_Layer: 0
+  m_Name: SaveFile
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1048222631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1048222630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4fc7d24187651f4b95169766eda71e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1048222632
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1048222630}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 309.15485, y: 232.06673, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1098310364
 GameObject:
   m_ObjectHideFlags: 0
@@ -3192,7 +3238,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 322022653}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.7766265
+  m_Size: 0.8830136
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
