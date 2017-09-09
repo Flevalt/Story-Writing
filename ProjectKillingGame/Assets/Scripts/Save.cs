@@ -86,9 +86,37 @@ public class Save : MonoBehaviour {
             Destroy(BGInst);
             Destroy(delInst);
             deleteData(BtnInst.GetComponent<SaveFile>().savefileindex);
+            Debug.Log("1:" + PlayerPrefs.GetFloat("textspeed1"));
+            Debug.Log("2:" + PlayerPrefs.GetFloat("textspeed2"));
+            Debug.Log("3:" + PlayerPrefs.GetFloat("textspeed3"));
+            Debug.Log("4:" + PlayerPrefs.GetFloat("textspeed4"));
+            Debug.Log("5:" + PlayerPrefs.GetFloat("textspeed5"));
+            Debug.Log("6:" + PlayerPrefs.GetFloat("textspeed6"));
             loadMenu.getSaveFiles().RemoveAt(BtnInst.GetComponent<SaveFile>().savefileindex);
             loadMenu.sortPlayerPrefs();
-            loadMenu.sortVisuals(); });
+            Debug.Log("1:" + PlayerPrefs.GetFloat("textspeed1"));
+            Debug.Log("2:" + PlayerPrefs.GetFloat("textspeed2"));
+            Debug.Log("3:" + PlayerPrefs.GetFloat("textspeed3"));
+            Debug.Log("4:" + PlayerPrefs.GetFloat("textspeed4"));
+            Debug.Log("5:" + PlayerPrefs.GetFloat("textspeed5"));
+            Debug.Log("6:" + PlayerPrefs.GetFloat("textspeed6"));
+            for (int j = BtnInst.GetComponent<SaveFile>().savefileindex; j < loadMenu.getCount() + 1; j++)
+            {
+                    int y = j + 1;
+                    int x = y - 1;
+                    Debug.Log("y" + y);
+                    GameObject.Find("SaveFileBG(Clone)" + y).name = "SaveFileBG(Clone)" + x;
+                    GameObject.Find("Savefile(Clone)" + y).name = "Savefile(Clone)" + x;
+                    GameObject.Find("DeleteBtn(Clone)" + y).name = "DeleteBtn(Clone)" + x;
+            }
+            GameObject.Find("LoadMenu").GetComponent<CanvasRenderer>().SetAlpha(0f);
+            GameObject.Find("LoadMenu").GetComponent<RectTransform>().Translate(new Vector2(0f, -450f));
+            GameObject.Find("CloseLoadMenu").GetComponent<Button>().interactable = false;
+            GameObject.Find("ScrollLoadedData").GetComponent<CanvasRenderer>().SetAlpha(0f);
+            GameObject.Find("T9").GetComponent<CanvasRenderer>().SetAlpha(0f);
+            GameObject.Find("Scrollbar").GetComponent<Scrollbar>().interactable = false;
+            GameObject.Find("Scrollbar").GetComponent<CanvasRenderer>().SetAlpha(0f);
+        });
 
         return button;
     }

@@ -168,9 +168,10 @@ public class Load : MonoBehaviour {
 
     public void sortPlayerPrefs()
     {
-        for (int i = lastDeletedElem(); i < getSaveFiles().Count; i++)
+        for (int i = lastDeletedElem(); i < getSaveFiles().Count+1; i++)
         {
             int z = i + 1;
+
             PlayerPrefs.SetFloat("textspeed" + i, PlayerPrefs.GetFloat("textspeed" + z)); //overwrite n with n+1
             PlayerPrefs.SetInt("currentBG" + i, PlayerPrefs.GetInt("currentBG" + z));
             PlayerPrefs.SetInt("Char1" + i, PlayerPrefs.GetInt("Char1" + z));
@@ -178,24 +179,14 @@ public class Load : MonoBehaviour {
             PlayerPrefs.SetInt("CharOn" + i, PlayerPrefs.GetInt("CharOn" + z));
             PlayerPrefs.SetInt("currentIndex" + i, PlayerPrefs.GetInt("currentIndex" + z));
             PlayerPrefs.SetInt("currentLine" + i, PlayerPrefs.GetInt("currentLine" + z));
-        }
-    }
 
-    public void sortVisuals()
-    {
-        for (int j = 0; j < getCount()+1; j++)
-        {
-            int k = j + 1;
-            Debug.Log("k" + k);
-            if (ReferenceEquals(GameObject.Find("SaveFileBG(Clone)" + k), null))
-            {
-                int y = k + 1;
-                int x = y - 1;
-                Debug.Log("y" + y);
-                GameObject.Find("SaveFileBG(Clone)" + y).name = "SaveFileBG(Clone)" + x;
-                GameObject.Find("Savefile(Clone)" + y).name = "Savefile(Clone)" + x;
-                GameObject.Find("DeleteBtn(Clone)" + y).name = "DeleteBtn(Clone)" + x;
-            }
+            PlayerPrefs.DeleteKey("textspeed" + z); // delete n+1
+            PlayerPrefs.DeleteKey("currentBG" + z);
+            PlayerPrefs.DeleteKey("Char1" + z);
+            PlayerPrefs.DeleteKey("Char2" + z);
+            PlayerPrefs.DeleteKey("CharOn" + z);
+            PlayerPrefs.DeleteKey("currentIndex" + z);
+            PlayerPrefs.DeleteKey("currentLine" + z);
         }
     }
 
