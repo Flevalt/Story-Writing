@@ -6,17 +6,16 @@ using UnityEngine.UI;
 public class TextWrite : MonoBehaviour {
 
     public Novel novel; //External script of Novel
-    public Controller controller;
-    private string[] currCh; //Currently loaded Chapter
     public Text textbox; //Textbox element
+    public Controller controller;
     public bool run; // turns true while text is being written in the textbox
     public bool started = false; // turns true when title is not displayed
+    private bool loaded = false; // true if player just loaded savefile
     private float f = 0.02f; //write delay
 
 	// Use this for initialization
 	void Start () {
         textbox = GameObject.Find("Textbox").GetComponent<Text>(); //textbox element
-        currCh = novel.getCurrentCh(novel.savedIndex); //loads chapter
     }
 
     public void attemptWriting(int i) {
@@ -32,6 +31,7 @@ public class TextWrite : MonoBehaviour {
     {
             if (run==false && Input.GetKeyDown("space"))
             {
+                loaded = false; //Reset loaded at beginning of the next writing sequence, in case the player pressed load AFTER the end of writing sequence
                 started = true;
                 GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
                 textbox.text = "";
@@ -44,12 +44,16 @@ public class TextWrite : MonoBehaviour {
             str = currCh[currLine];
             for (int i = 0; i < str.Length; i++)
             {
+            if (loaded == false) // If load is pressed during readChapter, cancel readChapter
+            {
                 textbox.text = textbox.text + str[i];
                 yield return new WaitForSeconds(f);
+            }
             }
 
             GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("NextPage").GetComponent<CanvasRenderer>().GetAlpha() + 1f);
             run = false;
+            loaded = false; // Reset loaded at end of the writing sequence
     }
 
     public float getF()
@@ -62,9 +66,14 @@ public class TextWrite : MonoBehaviour {
         f = fl;
     }
 
-    public void finishLine()
+    public void setRun(bool b)
     {
-        textbox.text = currCh[0];
+        run = b;
+    }
+
+    public void setLoaded(bool b)
+    {
+        loaded = b;
     }
 
 }

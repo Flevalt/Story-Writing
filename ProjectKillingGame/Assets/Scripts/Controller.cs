@@ -5,15 +5,45 @@ using UnityEngine.UI;
 
 public class Controller : MonoBehaviour {
 
+    public Load LoadMenu;
     public TextWrite wr;
     public SpriteCon spriteCon;
     public Novel novel;
-    public int currentBG;
+    public int currentBG = 0;
     private int Char1;
     private int Char2;
+    private int CharOn; // For loading function. 0 = 1on,2off, 1 = 1off,2on, 2 = 1on, 2on, 3 = 1off, 2off
     Vector3 moveCam;
     Color erase = new Color(0f,0f,0f,1f); //color to erase alpha
     private int runDisplay=0; // current displayRoutine to display
+
+    public Sprite yes;
+    public Sprite no;
+    public Sprite confirmBG;
+    GameObject question;
+    GameObject yush;
+    GameObject nope;
+    private int selectedSave = 1;
+
+    private void Awake()
+    {
+        // Prepare confirmWindow creator
+        question = new GameObject("Confirm");
+        yush = new GameObject("Yes");
+        nope = new GameObject("No");
+        Image questionImg = question.AddComponent<Image>();
+        Image yushImg = yush.AddComponent<Image>();
+        Image nopeImg = nope.AddComponent<Image>();
+        questionImg.sprite = confirmBG;
+        yushImg.sprite = yes;
+        nopeImg.sprite = no;
+        questionImg.rectTransform.sizeDelta = new Vector2(400f, 250f);
+        yushImg.rectTransform.sizeDelta = new Vector2(100f, 60f);
+        nopeImg.rectTransform.sizeDelta = new Vector2(100f, 60f);
+
+        Button btnYes = yush.AddComponent<Button>();
+        Button btnNo = nope.AddComponent<Button>();
+    }
 
     // Use this for initialization
     void Start () {
@@ -21,9 +51,11 @@ public class Controller : MonoBehaviour {
             GameObject.Find("UI_Panel").GetComponent<CanvasRenderer>().SetAlpha(1f);
             charAppear(1);
             charAppear(2);
+            CharOn = 2;
         } else { //While at beginning of chapter
             charDisappear(1);
             charDisappear(2);
+            CharOn = 3;
 
             GameObject.Find("BG1").GetComponent<SpriteRenderer>().color = GameObject.Find("BG1").GetComponent<SpriteRenderer>().color - erase; //BG Hidden
             GameObject.Find("BG2").GetComponent<SpriteRenderer>().color = GameObject.Find("BG2").GetComponent<SpriteRenderer>().color - erase; //BG Hidden
@@ -86,6 +118,7 @@ public class Controller : MonoBehaviour {
             }
             currentBG = 2;
             charAppear(2);
+            CharOn = 1;
         }
         runDisplay = 0;
     }
@@ -144,6 +177,47 @@ public class Controller : MonoBehaviour {
         runDisplay = 0;
     }
 
+    public void charDisplay(int charOn)
+    {
+        // 0 = 1on,2off, 1 = 1off,2on, 2 = 1on, 2on, 3 = 1off, 2off
+        switch (charOn)
+        {
+            case 0:
+                charAppear(1);
+                charDisappear(2);
+                break;
+            case 1:
+                charDisappear(1);
+                charAppear(2);
+                break;
+            case 2:
+                charAppear(1);
+                charAppear(2);
+                break;
+            case 3:
+                charDisappear(1);
+                charDisappear(2);
+                break;
+        }
+    }
+
+    public void confirmationWindow()
+    {
+        GameObject questInst = Instantiate(question);
+        GameObject yushInst = Instantiate(yush);
+        GameObject nopeInst = Instantiate(nope);
+        questInst.transform.SetParent(GameObject.Find("Canvas").transform, false);
+        yushInst.transform.SetParent(questInst.transform, false);
+        nopeInst.transform.SetParent(questInst.transform, false);
+
+        questInst.GetComponent<Image>().rectTransform.position = new Vector3(350f, 250f, 0f);
+        yushInst.GetComponent<Image>().rectTransform.localPosition = new Vector3(-75f, 0f, 0f);
+        nopeInst.GetComponent<Image>().rectTransform.localPosition = new Vector3(75f, 0f, 0f);
+
+        yushInst.GetComponent<Button>().onClick.AddListener(() => { LoadMenu.loadData(selectedSave); Destroy(questInst); });
+        nopeInst.GetComponent<Button>().onClick.AddListener(() => { Destroy(questInst); });
+    }
+
     void charAppear(int i)
     {
         //TODO: char selection parameter
@@ -181,5 +255,20 @@ public class Controller : MonoBehaviour {
     public int getChar2()
     {
         return Char2;
+    }
+
+    public int getCharOn()
+    {
+        return CharOn;
+    }
+
+    public void setCharOn(int i)
+    {
+        CharOn = i;
+    }
+
+    public void setSelectedSave(int i)
+    {
+        selectedSave = i;
     }
 }

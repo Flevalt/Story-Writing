@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class SaveFile : MonoBehaviour {
 
+    public int savefileindex;
     private float a;
     private int b;
     private int c;
     private int d;
     private int e;
     private int f;
+    private int g;
     List<float> saveData;
 
     void Awake()
@@ -24,8 +26,10 @@ public class SaveFile : MonoBehaviour {
             b = PlayerPrefs.GetInt("currentBG" + i);
             c = PlayerPrefs.GetInt("Char1" + i);
             d = PlayerPrefs.GetInt("Char2" + i);
-            e = PlayerPrefs.GetInt("currentIndex" + i);
-            f = PlayerPrefs.GetInt("currentLine" + i);
+            e = PlayerPrefs.GetInt("CharOn" + i);
+            f = PlayerPrefs.GetInt("currentIndex" + i);
+            g = PlayerPrefs.GetInt("currentLine" + i);
+            savefileindex = i;
     }
 
     public GameObject getSaveFile()

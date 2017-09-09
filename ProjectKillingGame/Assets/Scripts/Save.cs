@@ -11,6 +11,8 @@ public class Save : MonoBehaviour {
     public Controller control;
     public TextWrite textwr;
 
+    public Sprite otherBG;
+    public Sprite deleteBtn;
     public Sprite savefilesprite;
     private Vector2 vect = new Vector2(100f, 100f);
     public GameObject singlesave;
@@ -20,24 +22,87 @@ public class Save : MonoBehaviour {
     private int spritenr; // id of savefile img
     private Time creationTime; //time savefile was created
 
+    GameObject btnBG;
+    GameObject Btn;
+    GameObject delBtn;
     public bool firstbuttoncreated = false;
+
+    private void Awake()
+    {
+        btnBG = new GameObject("SaveFileBG");
+        Btn = new GameObject("Savefile");
+        delBtn = new GameObject("DeleteBtn");
+    }
 
     public Button createButtonForSave(Sprite sprite, Vector2 size, GameObject canvas, int c)
     {
-        GameObject go = new GameObject("Savefile");
 
-        Image image = go.AddComponent<Image>();
-        image.sprite = sprite;
-        image.rectTransform.sizeDelta = size;
+        GameObject BGInst = Instantiate(btnBG);
+        GameObject BtnInst = Instantiate(Btn);
+        GameObject delInst = Instantiate(delBtn);
 
-        Button button = go.AddComponent<Button>();
-        go.transform.SetParent(canvas.transform, false);
+        //Add savefile index
+        BtnInst.AddComponent<SaveFile>();
+        Image BGimg = BGInst.AddComponent<Image>();
+        Image saveImg = BtnInst.AddComponent<Image>();
+        BGimg.sprite = otherBG;
+        BGimg.rectTransform.sizeDelta = new Vector2(380f, 150f);
+        BGInst.transform.SetParent(canvas.transform, false);
 
-        image.rectTransform.position = image.rectTransform.localPosition + new Vector3(0f, 100f*c, 0f);
-        GameObject.Find("Content").GetComponent<RectTransform>().sizeDelta = GameObject.Find("Content").GetComponent<RectTransform>().sizeDelta + new Vector2(0f, 100f);
+        BtnInst.GetComponent<SaveFile>().savefileindex = c;
+        BGInst.name = "SaveFileBG(Clone)" + BtnInst.GetComponent<SaveFile>().savefileindex; //rename each instance
+        BtnInst.name = "Savefile(Clone)" + BtnInst.GetComponent<SaveFile>().savefileindex; //rename each instance
+        delInst.name = "DeleteBtn(Clone)" + BtnInst.GetComponent<SaveFile>().savefileindex; //rename each instance
+
+        BGInst.AddComponent<Button>().onClick.AddListener(() => { control.confirmationWindow(); control.setSelectedSave(BtnInst.GetComponent<SaveFile>().savefileindex); });
+
+        // change position of BG within content area
+        BGimg.rectTransform.position = BGimg.rectTransform.position + new Vector3(-10f, 150f - 150 * c, 0f);
+        //Create Savefile Button
+        saveImg.sprite = sprite;
+        saveImg.rectTransform.sizeDelta = size;
+
+        Button button = BtnInst.AddComponent<Button>();
+        BtnInst.transform.SetParent(BGInst.transform, false); //attach to btnBG
+        BtnInst.GetComponent<Button>().onClick.AddListener(() => { control.confirmationWindow(); control.setSelectedSave(BtnInst.GetComponent<SaveFile>().savefileindex); });
+
+        saveImg.rectTransform.position = saveImg.rectTransform.position + new Vector3(-120f, 0f, 0f);
+
+        // expand the Content area
+        GameObject.Find("Content").GetComponent<RectTransform>().sizeDelta = GameObject.Find("Content").GetComponent<RectTransform>().sizeDelta + new Vector2(0f, 150f);
         firstbuttoncreated = true;
 
+        Image delete = delInst.AddComponent<Image>();
+        delete.sprite = deleteBtn;
+        delete.rectTransform.sizeDelta = new Vector2(160f, 30f);
+
+        Button button1 = delInst.AddComponent<Button>();
+        delInst.transform.SetParent(BGInst.transform, false); //attach to btnBG
+
+        delete.rectTransform.position = saveImg.rectTransform.position + new Vector3(220f, -40f, 0f);
+        delInst.GetComponent<Button>().onClick.AddListener(() => {
+            GameObject.Find("Content").GetComponent<RectTransform>().sizeDelta = GameObject.Find("Content").GetComponent<RectTransform>().sizeDelta + new Vector2(0f, -150f);
+            Destroy(BtnInst);
+            Destroy(BGInst);
+            Destroy(delInst);
+            deleteData(BtnInst.GetComponent<SaveFile>().savefileindex);
+            loadMenu.getSaveFiles().RemoveAt(BtnInst.GetComponent<SaveFile>().savefileindex);
+            loadMenu.sortPlayerPrefs();
+            loadMenu.sortVisuals(); });
+
         return button;
+    }
+
+    public void deleteData(int i)
+    {
+        PlayerPrefs.DeleteKey("textspeed" + i);
+        PlayerPrefs.DeleteKey("currentBG" + i);
+        PlayerPrefs.DeleteKey("Char1" + i);
+        PlayerPrefs.DeleteKey("Char2" + i);
+        PlayerPrefs.DeleteKey("CharOn" + i);
+        PlayerPrefs.DeleteKey("currentIndex" + i);
+        PlayerPrefs.DeleteKey("currentLine" + i);
+        PlayerPrefs.Save();
     }
 
     public void saveData()
@@ -64,6 +129,7 @@ public class Save : MonoBehaviour {
                 PlayerPrefs.SetInt("currentBG" + 1 * loopcount, control.currentBG);
                 PlayerPrefs.SetInt("Char1" + 1 * loopcount, control.getChar1());
                 PlayerPrefs.SetInt("Char2" + 1 * loopcount, control.getChar2());
+                PlayerPrefs.SetInt("CharOn" + 1 * loopcount, control.getCharOn());
                 PlayerPrefs.SetInt("currentIndex" + 1 * loopcount, novel.savedIndex);
                 PlayerPrefs.SetInt("currentLine" + 1 * loopcount, novel.getCurrentLine());
                 PlayerPrefs.Save();
@@ -75,6 +141,7 @@ public class Save : MonoBehaviour {
         loadMenu.getSaveFiles().Add(singlesave); //Add savefile to list of savefiles
 
         int count = loadMenu.getCount();
-        createButtonForSave(savefilesprite, vect, content, count);
+        Button btn = createButtonForSave(savefilesprite, vect, content, count);
+        btn.GetComponent<SaveFile>().savefileindex = count;
     }
 }
