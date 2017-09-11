@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class SpdUp : MonoBehaviour {
 
-    public TextWrite writespd;
+    private TextBox writespd;
 
-	public void SpeedUp()
+    private void Awake()
+    {
+        writespd = GameObject.Find("Textbox").GetComponent<TextBox>();
+    }
+
+    public void SpeedUp()
     {
         if (writespd.getF() == 0) { }
         else

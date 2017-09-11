@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class SpdDown : MonoBehaviour {
 
-    public TextWrite writespd;
+    private TextBox writespd;
+
+    private void Awake()
+    {
+        writespd = GameObject.Find("Textbox").GetComponent<TextBox>();
+    }
 
     public void SpeedDown()
     {

@@ -20,6 +20,7 @@ public class Controller : MonoBehaviour {
     public Sprite yes;
     public Sprite no;
     public Sprite confirmBG;
+    GameObject InstanceContainer;
     GameObject question;
     GameObject yush;
     GameObject nope;
@@ -27,10 +28,14 @@ public class Controller : MonoBehaviour {
 
     private void Awake()
     {
-        // Prepare confirmWindow creator
+        // Prepare confirmWindow instantiator
+        InstanceContainer = new GameObject("InstanceContainer");
         question = new GameObject("Confirm");
         yush = new GameObject("Yes");
         nope = new GameObject("No");
+        question.transform.SetParent(InstanceContainer.transform, false);
+        yush.transform.SetParent(InstanceContainer.transform, false);
+        nope.transform.SetParent(InstanceContainer.transform, false);
         Image questionImg = question.AddComponent<Image>();
         Image yushImg = yush.AddComponent<Image>();
         Image nopeImg = nope.AddComponent<Image>();
@@ -40,12 +45,10 @@ public class Controller : MonoBehaviour {
         questionImg.rectTransform.sizeDelta = new Vector2(400f, 250f);
         yushImg.rectTransform.sizeDelta = new Vector2(100f, 60f);
         nopeImg.rectTransform.sizeDelta = new Vector2(100f, 60f);
-
         Button btnYes = yush.AddComponent<Button>();
         Button btnNo = nope.AddComponent<Button>();
     }
 
-    // Use this for initialization
     void Start () {
 		if(novel.getCurrentLine() != -1) { //While not at beginning of Chapter
             GameObject.Find("UI_Panel").GetComponent<CanvasRenderer>().SetAlpha(1f);
@@ -65,7 +68,6 @@ public class Controller : MonoBehaviour {
             GameObject.Find("Auto").GetComponent<Button>().enabled = false;
             GameObject.Find("SpeedUp").GetComponent<Button>().enabled = false;
             GameObject.Find("SpeedDown").GetComponent<Button>().enabled = false;
-            GameObject.Find("Save").GetComponent<Button>().enabled = false;
             GameObject.Find("Load").GetComponent<Button>().enabled = false;
             GameObject.Find("Menu").GetComponent<Button>().enabled = false;
             GameObject.Find("NameBox").GetComponent<Button>().enabled = false;
@@ -76,7 +78,6 @@ public class Controller : MonoBehaviour {
             GameObject.Find("Auto").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
             GameObject.Find("SpeedUp").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
             GameObject.Find("SpeedDown").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
-            GameObject.Find("Save").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
             GameObject.Find("Load").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
             GameObject.Find("Menu").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
             GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
@@ -84,7 +85,6 @@ public class Controller : MonoBehaviour {
             GameObject.Find("T2").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
             GameObject.Find("T3").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
             GameObject.Find("T4").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
-            GameObject.Find("T5").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
             GameObject.Find("T6").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
             GameObject.Find("T7").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
             GameObject.Find("T8").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
@@ -94,10 +94,10 @@ public class Controller : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("space") && runDisplay == 0 && novel.getCurrentLine() == -1)
+        if (Input.GetKeyDown("space") && runDisplay == 0 && novel.getCurrentLine() == 0)
         {
             StartCoroutine(DisplayCh0());
-        } else if (Input.GetKeyDown("space") && runDisplay==0 && novel.getCurrentLine()==8)
+        } else if (Input.GetKeyDown("space") && runDisplay==0 && novel.getCurrentLine()==9)
         {
             StartCoroutine(DisplayCh1());
         } 
@@ -106,7 +106,7 @@ public class Controller : MonoBehaviour {
     IEnumerator DisplayCh1()
     {
         runDisplay = 1;
-        if (novel.savedIndex == 1 && novel.getCurrentLine() == 8)
+        if (novel.savedIndex == 1 && novel.getCurrentLine() == 9)
         {
             // Jump to 2nd BG
             GameObject.Find("MainCam").GetComponent<Transform>().Translate(new Vector3(-24f, 0f, 0f));
@@ -127,8 +127,9 @@ public class Controller : MonoBehaviour {
     {
         runDisplay = 1;
         GameObject.Find("Title").GetComponent<CanvasRenderer>().SetAlpha(0f); //Title disappears
+        GameObject.Find("Title").GetComponent<RectTransform>().position = GameObject.Find("Title").GetComponent<RectTransform>().localPosition = new Vector3(0f, 200f, 0f);
 
-        if (novel.savedIndex == 1 && novel.getCurrentLine() == -1)
+        if (novel.savedIndex == 1 && novel.getCurrentLine() == 0)
         {
             // Jump to 2nd BG
             GameObject.Find("MainCam").GetComponent<Transform>().Translate(new Vector3(12f, 0f, 0f));
@@ -141,7 +142,7 @@ public class Controller : MonoBehaviour {
             currentBG = 1;
         }
 
-        while (novel.getCurrentLine() < 8 && GameObject.Find("T8").GetComponent<CanvasRenderer>().GetAlpha() != 1f)
+        while (novel.getCurrentLine() < 9 && GameObject.Find("T8").GetComponent<CanvasRenderer>().GetAlpha() != 1f)
         {
             //UI appears
             GameObject.Find("UI_Panel").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("UI_Panel").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
@@ -150,7 +151,6 @@ public class Controller : MonoBehaviour {
             GameObject.Find("Auto").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("Auto").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
             GameObject.Find("SpeedUp").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("SpeedUp").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
             GameObject.Find("SpeedDown").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("SpeedDown").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
-            GameObject.Find("Save").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("Save").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
             GameObject.Find("Load").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("Load").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
             GameObject.Find("Menu").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("Menu").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
 
@@ -158,7 +158,6 @@ public class Controller : MonoBehaviour {
             GameObject.Find("T2").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("T2").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
             GameObject.Find("T3").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("T3").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
             GameObject.Find("T4").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("T4").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
-            GameObject.Find("T5").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("T5").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
             GameObject.Find("T6").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("T6").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
             GameObject.Find("T7").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("T7").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
             GameObject.Find("T8").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("T8").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
@@ -168,7 +167,6 @@ public class Controller : MonoBehaviour {
             GameObject.Find("Auto").GetComponent<Button>().enabled = true;
             GameObject.Find("SpeedUp").GetComponent<Button>().enabled = true;
             GameObject.Find("SpeedDown").GetComponent<Button>().enabled = true;
-            GameObject.Find("Save").GetComponent<Button>().enabled = true;
             GameObject.Find("Load").GetComponent<Button>().enabled = true;
             GameObject.Find("Menu").GetComponent<Button>().enabled = true;
             GameObject.Find("NameBox").GetComponent<Button>().enabled = true;
@@ -214,6 +212,7 @@ public class Controller : MonoBehaviour {
         yushInst.GetComponent<Image>().rectTransform.localPosition = new Vector3(-75f, 0f, 0f);
         nopeInst.GetComponent<Image>().rectTransform.localPosition = new Vector3(75f, 0f, 0f);
 
+        Debug.Log("ss during confWindow" + selectedSave);
         yushInst.GetComponent<Button>().onClick.AddListener(() => { LoadMenu.loadData(selectedSave); Destroy(questInst); });
         nopeInst.GetComponent<Button>().onClick.AddListener(() => { Destroy(questInst); });
     }
@@ -269,6 +268,7 @@ public class Controller : MonoBehaviour {
 
     public void setSelectedSave(int i)
     {
+        Debug.Log("i = " + i);
         selectedSave = i;
     }
 }

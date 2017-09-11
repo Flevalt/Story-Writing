@@ -5,13 +5,16 @@ using UnityEngine.UI;
 
 public class TitleWrite : MonoBehaviour {
 
-    public TextWrite wr;
+
+    private TextWrite wr;
     public Novel novel;
-    Text dispText;
+    private Text dispText;
 
     // Use this for initialization
     void Start () {
+        wr = GameObject.Find("textwriter(Inst)").GetComponent<TextWrite>();
         GameObject.Find("Title").GetComponent<CanvasRenderer>().SetAlpha(0.0f); //Make Title invisible by default
+        GameObject.Find("Title").GetComponent<RectTransform>().localPosition = new Vector3(0f, 200f, 0f);
         pickTitle(novel.savedIndex);    //Pick current title
         if (novel.getCurrentLine() == -1) //Only load title if at beginning of a chapter
         {
@@ -22,6 +25,7 @@ public class TitleWrite : MonoBehaviour {
     //Fades in the title
     IEnumerator DisplayTitle ()
     {
+        GameObject.Find("Title").GetComponent<RectTransform>().localPosition = new Vector3(-9f, 30f, 0f);
         while (wr.started == false && novel.getCurrentLine() == -1 && GameObject.Find("Title").GetComponent<CanvasRenderer>().GetAlpha() != 1.0f)
         {
             GameObject.Find("Title").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("Title").GetComponent<CanvasRenderer>().GetAlpha() + 0.025f);
@@ -43,6 +47,11 @@ public class TitleWrite : MonoBehaviour {
             default:
                 return "~ Prologue ~";
         }
+    }
+
+    public void setTextWrite(TextWrite tw)
+    {
+        wr = tw;
     }
 
 }

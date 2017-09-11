@@ -13,15 +13,9 @@ public class Novel : MonoBehaviour {
     private string[] Ch4 = new string[200];
     private string[] Ch5 = new string[200];
 
-    // Use this for initialization
-    void Start ()
+    private void Awake()
     {
         currentCh = getCurrentCh(savedIndex);
-    }
-
-    public Novel getNovel()
-    {
-        return this;
     }
 
     public string[] getCurrentCh(int index)
