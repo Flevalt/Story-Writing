@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Controller : MonoBehaviour {
 
     public Load LoadMenu;
-    public TextWrite wr;
+    public Skip skip;
     public SpriteCon spriteCon;
     public Novel novel;
     public int currentBG = 0;
@@ -16,6 +16,7 @@ public class Controller : MonoBehaviour {
     Vector3 moveCam;
     Color erase = new Color(0f,0f,0f,1f); //color to erase alpha
     private int runDisplay=0; // current displayRoutine to display
+    private bool Ch1VisualsLoaded = false;
 
     public Sprite yes;
     public Sprite no;
@@ -94,10 +95,12 @@ public class Controller : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+
         if (Input.GetKeyDown("space") && runDisplay == 0 && novel.getCurrentLine() == 0)
         {
             StartCoroutine(DisplayCh0());
-        } else if (Input.GetKeyDown("space") && runDisplay==0 && novel.getCurrentLine()==9)
+        } else if ((Input.GetKeyDown("space")||(skip.autoOn==true&& skip.skipOn == false) ||(skip.skipOn==true&&skip.autoOn==false)) 
+            && runDisplay==0 && novel.getCurrentLine()==8 && Ch1VisualsLoaded == false)
         {
             StartCoroutine(DisplayCh1());
         } 
@@ -105,8 +108,9 @@ public class Controller : MonoBehaviour {
 
     IEnumerator DisplayCh1()
     {
+        Ch1VisualsLoaded = true;
         runDisplay = 1;
-        if (novel.savedIndex == 1 && novel.getCurrentLine() == 9)
+        if (novel.savedIndex == 1 && novel.getCurrentLine() == 8)
         {
             // Jump to 2nd BG
             GameObject.Find("MainCam").GetComponent<Transform>().Translate(new Vector3(-24f, 0f, 0f));

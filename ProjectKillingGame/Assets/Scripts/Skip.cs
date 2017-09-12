@@ -27,21 +27,12 @@ public class Skip : MonoBehaviour {
         if (skipOn == true)
         {
             skipOn = false;
-
+            GameObject.Find("Skip").GetComponent<Image>().color = GameObject.Find("Skip").GetComponent<Image>().color - new Color(0f, 1f, 0f) + new Color(1f, 0f, 0f);
         } else
         {
             skipOn = true;
-            for (int j = 0; j < novel.getCurrentCh(novel.savedIndex).Length; j++)
-            {
-                tb.text = novel.getCurrentCh(novel.savedIndex)[novel.getCurrentLine()];
-                novel.setCurrentLine(novel.getCurrentLine() + 1);
-            }
+            GameObject.Find("Skip").GetComponent<Image>().color = GameObject.Find("Skip").GetComponent<Image>().color - new Color(1f, 0f, 0f) + new Color(0f, 1f, 0f);
         }
-    }
-
-    IEnumerator wait()
-    {
-        yield return new WaitForSeconds(1f);
     }
 
     public void autoRead()
@@ -49,12 +40,11 @@ public class Skip : MonoBehaviour {
         if (autoOn == true)
         {
             autoOn = false;
-
-
+            GameObject.Find("Auto").GetComponent<Image>().color = GameObject.Find("Auto").GetComponent<Image>().color - new Color(0f, 1f, 0f) + new Color(1f, 0f, 0f);
         } else
         {
             autoOn = true;
-
+            GameObject.Find("Auto").GetComponent<Image>().color = GameObject.Find("Auto").GetComponent<Image>().color - new Color(1f, 0f, 0f) + new Color(0f, 1f, 0f);
         }
 
     }
