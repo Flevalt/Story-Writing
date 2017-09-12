@@ -84,15 +84,14 @@
     <Compile Include="Assets\Scripts\LoadScene.cs" />
     <Compile Include="Assets\Scripts\MakeDragable.cs" />
     <Compile Include="Assets\Scripts\MenuColor.cs" />
-    <Compile Include="Assets\Scripts\Name_OnOff.cs" />
     <Compile Include="Assets\Scripts\Novel.cs" />
     <Compile Include="Assets\Scripts\Quit.cs" />
     <Compile Include="Assets\Scripts\SaveFile.cs" />
+    <Compile Include="Assets\Scripts\Skip.cs" />
     <Compile Include="Assets\Scripts\SpdDown.cs" />
     <Compile Include="Assets\Scripts\SpdUp.cs" />
     <Compile Include="Assets\Scripts\SpriteCon.cs" />
     <Compile Include="Assets\Scripts\TextBox.cs" />
-    <Compile Include="Assets\Scripts\TextBox_OnOff.cs" />
     <Compile Include="Assets\Scripts\TextWrite.cs" />
     <Compile Include="Assets\Scripts\TitleWrite.cs" />
   </ItemGroup>

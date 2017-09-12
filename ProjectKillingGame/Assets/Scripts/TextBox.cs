@@ -6,23 +6,26 @@ public class TextBox : MonoBehaviour {
 
     private GameObject textwriter;
     private Controller controller;
+    private Skip skip;
     private float f = 0.02f; //write delay, aka textspeed
 
     private void Awake()
     {
+        skip = GameObject.Find("Skip").GetComponent<Skip>();
         controller = GameObject.Find("Controller").GetComponent<Controller>();
         textwriter = new GameObject("textwriter"); //textwriter
-    }
 
-    void Start () {
         GameObject textwr = Instantiate(textwriter); //instance of textwriter
         textwr.name = "textwriter(Inst)";
         textwr.AddComponent<TextWrite>(); //add functionality to textwriter instance
+    }
+
+    void Start () {
         
     }
 	
 	void Update () {
-        if (Input.GetKeyDown("space"))
+        if (Input.GetKeyDown("space") && skip.skipOn == false)
         {
             GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
 
