@@ -9,7 +9,11 @@ public class Controller : MonoBehaviour {
     public Skip skip;
     public SpriteCon spriteCon;
     public Novel novel;
+    public inspection inspection;
     public int currentBG = 0;
+    public int gameMode = 0; //0 = reading, 1 = inspection, 2 = RPG
+    public bool enableWrite = true;
+    private TextBox textbox;
     private int Char1;
     private int Char2;
     private int CharOn; // For loading function. 0 = 1on,2off, 1 = 1off,2on, 2 = 1on, 2on, 3 = 1off, 2off
@@ -48,6 +52,9 @@ public class Controller : MonoBehaviour {
         nopeImg.rectTransform.sizeDelta = new Vector2(100f, 60f);
         Button btnYes = yush.AddComponent<Button>();
         Button btnNo = nope.AddComponent<Button>();
+
+        GameObject.Find("NextPage").GetComponent<Button>().enabled = false;
+        textbox = GameObject.Find("Textbox").GetComponent<TextBox>();
     }
 
     void Start () {
@@ -64,31 +71,7 @@ public class Controller : MonoBehaviour {
             GameObject.Find("BG1").GetComponent<SpriteRenderer>().color = GameObject.Find("BG1").GetComponent<SpriteRenderer>().color - erase; //BG Hidden
             GameObject.Find("BG2").GetComponent<SpriteRenderer>().color = GameObject.Find("BG2").GetComponent<SpriteRenderer>().color - erase; //BG Hidden
 
-            GameObject.Find("NameBox").GetComponent<Button>().enabled = false;
-            GameObject.Find("Skip").GetComponent<Button>().enabled = false;
-            GameObject.Find("Auto").GetComponent<Button>().enabled = false;
-            GameObject.Find("SpeedUp").GetComponent<Button>().enabled = false;
-            GameObject.Find("SpeedDown").GetComponent<Button>().enabled = false;
-            GameObject.Find("Load").GetComponent<Button>().enabled = false;
-            GameObject.Find("Menu").GetComponent<Button>().enabled = false;
-            GameObject.Find("NameBox").GetComponent<Button>().enabled = false;
-
-            GameObject.Find("UI_Panel").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
-            GameObject.Find("NameBox").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
-            GameObject.Find("Skip").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
-            GameObject.Find("Auto").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
-            GameObject.Find("SpeedUp").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
-            GameObject.Find("SpeedDown").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
-            GameObject.Find("Load").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
-            GameObject.Find("Menu").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
-            GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
-            GameObject.Find("T1").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
-            GameObject.Find("T2").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
-            GameObject.Find("T3").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
-            GameObject.Find("T4").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
-            GameObject.Find("T6").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
-            GameObject.Find("T7").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
-            GameObject.Find("T8").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
+            textboxDisappear();
         }
     }
 
@@ -100,18 +83,26 @@ public class Controller : MonoBehaviour {
         {
             StartCoroutine(DisplayCh0());
         } else if ((Input.GetKeyDown("space")||(skip.autoOn==true&& skip.skipOn == false) ||(skip.skipOn==true&&skip.autoOn==false)) 
-            && runDisplay==0 && novel.getCurrentLine()==8 && Ch1VisualsLoaded == false)
+            && runDisplay==0 && novel.getCurrentLine()>=8)
         {
             StartCoroutine(DisplayCh1());
-        } 
+        }
+
+        if (gameMode == 1 && novel.getCurrentLine() == 14 && novel.savedIndex == 1)
+        {
+            
+        }
     }
 
     IEnumerator DisplayCh1()
     {
-        Ch1VisualsLoaded = true;
         runDisplay = 1;
-        if (novel.savedIndex == 1 && novel.getCurrentLine() == 8)
+        if (novel.getCurrentLine() == 8 && Ch1VisualsLoaded == false)
         {
+            enableWrite = false;
+            Ch1VisualsLoaded = true;
+            // Change Namebox
+            GameObject.Find("T8").GetComponent<Text>().text = "Sabrina";
             // Jump to 2nd BG
             GameObject.Find("MainCam").GetComponent<Transform>().Translate(new Vector3(-24f, 0f, 0f));
             //BG slowly appears
@@ -121,9 +112,45 @@ public class Controller : MonoBehaviour {
                 yield return new WaitForSeconds(0.08f);
             }
             currentBG = 2;
-            charAppear(2);
             CharOn = 1;
+            enableWrite = true;
         }
+
+        if (novel.getCurrentLine() == 9)
+        {
+            charAppear(2);
+        }
+
+        if (novel.getCurrentLine() == 14)
+        {
+            //enable inspection mode
+            gameMode = 1;
+            //disable writing visuals
+            charDisappear(2);
+            stopWriting();
+            textboxDisappear();
+
+            inspection.instObject(1, 300f, -50f, 80f, 70f); //sink
+            inspection.instObject(2, 300f, -200f, 80f, 70f); //toillet
+            inspection.instObject(3, -220f, -180f, 240f, 120f); //bed
+            inspection.instObject(4, -30f, 225f, 80f, 50f); //ventilation shaft
+            inspection.instObject(5, 220f, -30f, 120f, 320f); //door
+            inspection.instObject(6, 90f, 60f, 100f, 100f); //screen
+            inspection.instObject(7, 150f, 200f, 250f, 70f); //lights
+            inspection.instObject(8, -20f, -100f, 80f, 90f); //chair
+        }
+
+        while (novel.getCurrentLine() == 18 && GameObject.Find("NameBox").GetComponent<CanvasRenderer>().GetAlpha() != 1f)
+        {
+            textboxAppear();
+            yield return new WaitForSeconds(0.08f);
+        }
+
+        if (novel.getCurrentLine() == 18)
+        {
+            textboxDisappear();
+        }
+
         runDisplay = 0;
     }
 
@@ -149,34 +176,76 @@ public class Controller : MonoBehaviour {
         while (novel.getCurrentLine() < 9 && GameObject.Find("T8").GetComponent<CanvasRenderer>().GetAlpha() != 1f)
         {
             //UI appears
-            GameObject.Find("UI_Panel").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("UI_Panel").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
-            GameObject.Find("NameBox").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("NameBox").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
-            GameObject.Find("Skip").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("Skip").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
-            GameObject.Find("Auto").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("Auto").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
-            GameObject.Find("SpeedUp").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("SpeedUp").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
-            GameObject.Find("SpeedDown").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("SpeedDown").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
-            GameObject.Find("Load").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("Load").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
-            GameObject.Find("Menu").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("Menu").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
-
-            GameObject.Find("T1").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("T1").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
-            GameObject.Find("T2").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("T2").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
-            GameObject.Find("T3").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("T3").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
-            GameObject.Find("T4").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("T4").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
-            GameObject.Find("T6").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("T6").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
-            GameObject.Find("T7").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("T7").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
-            GameObject.Find("T8").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("T8").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
-
-            GameObject.Find("NameBox").GetComponent<Button>().enabled = true;
-            GameObject.Find("Skip").GetComponent<Button>().enabled = true;
-            GameObject.Find("Auto").GetComponent<Button>().enabled = true;
-            GameObject.Find("SpeedUp").GetComponent<Button>().enabled = true;
-            GameObject.Find("SpeedDown").GetComponent<Button>().enabled = true;
-            GameObject.Find("Load").GetComponent<Button>().enabled = true;
-            GameObject.Find("Menu").GetComponent<Button>().enabled = true;
-            GameObject.Find("NameBox").GetComponent<Button>().enabled = true;
+            textboxAppear();
             yield return new WaitForSeconds(0.08f);
         }
         runDisplay = 0;
+    }
+
+    public void textboxAppear()
+    {
+        GameObject.Find("UI_Panel").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("UI_Panel").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+        GameObject.Find("NameBox").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("NameBox").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+        GameObject.Find("Skip").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("Skip").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+        GameObject.Find("Auto").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("Auto").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+        GameObject.Find("SpeedUp").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("SpeedUp").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+        GameObject.Find("SpeedDown").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("SpeedDown").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+        GameObject.Find("Load").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("Load").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+        GameObject.Find("Menu").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("Menu").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+
+        GameObject.Find("T1").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("T1").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+        GameObject.Find("T2").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("T2").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+        GameObject.Find("T3").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("T3").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+        GameObject.Find("T4").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("T4").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+        GameObject.Find("T6").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("T6").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+        GameObject.Find("T7").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("T7").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+        GameObject.Find("T8").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("T8").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+
+        GameObject.Find("NameBox").GetComponent<Button>().enabled = true;
+        GameObject.Find("Skip").GetComponent<Button>().enabled = true;
+        GameObject.Find("Auto").GetComponent<Button>().enabled = true;
+        GameObject.Find("SpeedUp").GetComponent<Button>().enabled = true;
+        GameObject.Find("SpeedDown").GetComponent<Button>().enabled = true;
+        GameObject.Find("Load").GetComponent<Button>().enabled = true;
+        GameObject.Find("Menu").GetComponent<Button>().enabled = true;
+        GameObject.Find("NameBox").GetComponent<Button>().enabled = true;
+    }
+
+    public void textboxDisappear()
+    {
+        GameObject.Find("NameBox").GetComponent<Button>().enabled = false;
+        GameObject.Find("Skip").GetComponent<Button>().enabled = false;
+        GameObject.Find("Auto").GetComponent<Button>().enabled = false;
+        GameObject.Find("SpeedUp").GetComponent<Button>().enabled = false;
+        GameObject.Find("SpeedDown").GetComponent<Button>().enabled = false;
+        GameObject.Find("Load").GetComponent<Button>().enabled = false;
+        GameObject.Find("Menu").GetComponent<Button>().enabled = false;
+        GameObject.Find("NameBox").GetComponent<Button>().enabled = false;
+
+        GameObject.Find("UI_Panel").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
+        GameObject.Find("NameBox").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
+        GameObject.Find("Skip").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
+        GameObject.Find("Auto").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
+        GameObject.Find("SpeedUp").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
+        GameObject.Find("SpeedDown").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
+        GameObject.Find("Load").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
+        GameObject.Find("Menu").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
+        GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
+        GameObject.Find("T1").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
+        GameObject.Find("T2").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
+        GameObject.Find("T3").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
+        GameObject.Find("T4").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
+        GameObject.Find("T6").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
+        GameObject.Find("T7").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
+        GameObject.Find("T8").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
+        GameObject.Find("TutorialPanel").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
+    }
+
+    public void stopWriting()
+    {
+        enableWrite = false;
+        Destroy(GameObject.Find("textwriter(Inst)" + textbox.txtWriterNr));
+        GameObject.Find("Textbox").GetComponent<Text>().text = "";
     }
 
     public void charDisplay(int charOn)

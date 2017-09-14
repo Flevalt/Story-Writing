@@ -210,7 +210,7 @@ public class Load : MonoBehaviour {
         if (GameObject.Find("LoadMenu").GetComponent<CanvasRenderer>().GetAlpha() != 1f)
         {
             GameObject.Find("LoadMenu").GetComponent<CanvasRenderer>().SetAlpha(1f);
-            GameObject.Find("LoadMenu").GetComponent<RectTransform>().Translate(new Vector2(0f, 450f));
+            GameObject.Find("LoadMenu").GetComponent<RectTransform>().Translate(new Vector2(0f, 650f));
             GameObject.Find("CloseLoadMenu").GetComponent<Button>().interactable = true;
             GameObject.Find("ScrollLoadedData").GetComponent<CanvasRenderer>().SetAlpha(1f);
             GameObject.Find("T9").GetComponent<CanvasRenderer>().SetAlpha(1f);

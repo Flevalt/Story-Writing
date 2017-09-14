@@ -6,20 +6,18 @@ using UnityEngine.UI;
 public class Skip : MonoBehaviour {
 
     private TextWrite tw;
+    private TextBox textbox;
     private Text tb;
     private Novel novel;
     public bool skipOn = false;
     public bool autoOn = false;
 
-	void Awake () {
-
-	}
-
     private void Start()
     {
+        textbox = GameObject.Find("Textbox").GetComponent<TextBox>();
         tb = GameObject.Find("Textbox").GetComponent<Text>();
         novel = GameObject.Find("NovelStorage").GetComponent<Novel>();
-        tw = GameObject.Find("textwriter(Inst)").GetComponent<TextWrite>();
+        tw = GameObject.Find("textwriter(Inst)" + textbox.txtWriterNr).GetComponent<TextWrite>();
     }
 
     public void skipDatShit()

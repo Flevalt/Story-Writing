@@ -5,14 +5,15 @@ using UnityEngine.UI;
 
 public class TitleWrite : MonoBehaviour {
 
-
+    private TextBox textbox;
     private TextWrite wr;
     public Novel novel;
     private Text dispText;
 
     // Use this for initialization
     void Start () {
-        wr = GameObject.Find("textwriter(Inst)").GetComponent<TextWrite>();
+        textbox = GameObject.Find("Textbox").GetComponent<TextBox>();
+        wr = GameObject.Find("textwriter(Inst)" + textbox.txtWriterNr).GetComponent<TextWrite>();
         GameObject.Find("Title").GetComponent<CanvasRenderer>().SetAlpha(0.0f); //Make Title invisible by default
         GameObject.Find("Title").GetComponent<RectTransform>().localPosition = new Vector3(0f, 200f, 0f);
         pickTitle(novel.savedIndex);    //Pick current title

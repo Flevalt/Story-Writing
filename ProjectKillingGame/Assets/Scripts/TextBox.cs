@@ -9,6 +9,7 @@ public class TextBox : MonoBehaviour {
     private Skip skip;
     GameObject textwr;
     private float f = 0.02f; //write delay, aka textspeed
+    public int txtWriterNr = 1;
 
     private void Awake()
     {
@@ -17,27 +18,26 @@ public class TextBox : MonoBehaviour {
         textwriter = new GameObject("textwriter"); //textwriter
 
         textwr = Instantiate(textwriter); //instance of textwriter
-        textwr.name = "textwriter(Inst)";
+        textwr.name = "textwriter(Inst)" + txtWriterNr;
         textwr.AddComponent<TextWrite>(); //add functionality to textwriter instance
-    }
-
-    void Start () {
-        
     }
 	
 	void Update () {
         if (textwr == null) {
-            textwr = GameObject.Find("textwriter(Inst)");
+            textwr = GameObject.Find("textwriter(Inst)" + txtWriterNr);
         }
-
+        // Only attempt writing at all if controller hasn't disabled it
+        if (controller.enableWrite == true && controller.gameMode == 0)
+        {
         //Auto-call
         if (skip.skipOn == false && skip.autoOn == true && textwr.GetComponent<TextWrite>().run == false)
         {
             GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
 
-            Destroy(GameObject.Find("textwriter(Inst)"));
+            Destroy(GameObject.Find("textwriter(Inst)" + txtWriterNr));
             GameObject textwr = Instantiate(textwriter);
-            textwr.name = "textwriter(Inst)";
+            txtWriterNr += 1;
+            textwr.name = "textwriter(Inst)" + txtWriterNr;
             textwr.AddComponent<TextWrite>();
             textwr.GetComponent<TextWrite>().setF(f);
             textwr.GetComponent<TextWrite>().attemptAuto();
@@ -47,9 +47,10 @@ public class TextBox : MonoBehaviour {
         {
             GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
 
-            Destroy(GameObject.Find("textwriter(Inst)"));
+            Destroy(GameObject.Find("textwriter(Inst)" + txtWriterNr));
             GameObject textwr = Instantiate(textwriter);
-            textwr.name = "textwriter(Inst)";
+                txtWriterNr += 1;
+                textwr.name = "textwriter(Inst)" + txtWriterNr;
             textwr.AddComponent<TextWrite>();
             textwr.GetComponent<TextWrite>().setF(f);
             textwr.GetComponent<TextWrite>().attemptSkip();
@@ -58,14 +59,15 @@ public class TextBox : MonoBehaviour {
         {
             GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
 
-            Destroy(GameObject.Find("textwriter(Inst)"));
+            Destroy(GameObject.Find("textwriter(Inst)" + txtWriterNr));
             GameObject textwr = Instantiate(textwriter);
-            textwr.name = "textwriter(Inst)";
+                txtWriterNr += 1;
+                textwr.name = "textwriter(Inst)" + txtWriterNr;
             textwr.AddComponent<TextWrite>();
             textwr.GetComponent<TextWrite>().setF(f);
             textwr.GetComponent<TextWrite>().attemptWriting();
         }
-
+        }
     }
 
     public float getF()

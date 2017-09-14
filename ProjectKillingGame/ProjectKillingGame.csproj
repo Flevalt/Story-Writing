@@ -94,6 +94,7 @@
     <Compile Include="Assets\Scripts\TextBox.cs" />
     <Compile Include="Assets\Scripts\TextWrite.cs" />
     <Compile Include="Assets\Scripts\TitleWrite.cs" />
+    <Compile Include="Assets\Scripts\inspection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
