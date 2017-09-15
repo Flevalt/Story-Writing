@@ -124,7 +124,6 @@ public class Controller : MonoBehaviour {
 
         if (novel.getCurrentLine() == 14 && GameObject.Find("iO(Inst)1") == null && gameMode == 0)
         {
-            Debug.Log(novel.getCurrentLine());
             //enable inspection mode
             gameMode = 1;
             //disable writing visuals
@@ -135,12 +134,12 @@ public class Controller : MonoBehaviour {
             GameObject.Find("TutorialPanel").GetComponent<RectTransform>().Translate(new Vector2(675f, 0f));
             GameObject.Find("CloseTutorialPanel").GetComponent<Button>().onClick.AddListener(()=> {
                 GameObject.Find("TutorialPanel").GetComponent<RectTransform>().Translate(new Vector2(-675f, 0f));
-                inspection.instObject(1, 300f, -50f, 80f, 70f); //sink
+                inspection.instObject(1, 300f, -50f, 80f, 70f, 1, 1); //sink
                 inspection.instObject(2, 300f, -200f, 80f, 70f); //toillet
                 inspection.instObject(3, -220f, -180f, 240f, 120f); //bed
                 inspection.instObject(4, -30f, 225f, 80f, 50f); //ventilation shaft
                 inspection.instObject(5, 220f, -30f, 120f, 320f); //door
-                inspection.instObject(6, 90f, 60f, 100f, 100f); //screen
+                inspection.instObject(6, 90f, 60f, 100f, 100f, 2, 0); //screen
                 inspection.instObject(7, 150f, 200f, 250f, 70f); //lights
                 inspection.instObject(8, -20f, -100f, 80f, 90f); //chair
             });
@@ -291,7 +290,6 @@ public class Controller : MonoBehaviour {
         yushInst.GetComponent<Image>().rectTransform.localPosition = new Vector3(-75f, 0f, 0f);
         nopeInst.GetComponent<Image>().rectTransform.localPosition = new Vector3(75f, 0f, 0f);
 
-        Debug.Log("ss during confWindow" + selectedSave);
         yushInst.GetComponent<Button>().onClick.AddListener(() => { LoadMenu.loadData(selectedSave); Destroy(questInst); });
         nopeInst.GetComponent<Button>().onClick.AddListener(() => { Destroy(questInst); });
     }
@@ -347,7 +345,6 @@ public class Controller : MonoBehaviour {
 
     public void setSelectedSave(int i)
     {
-        Debug.Log("i = " + i);
         selectedSave = i;
     }
 }

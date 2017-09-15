@@ -9,8 +9,21 @@ public class MouseAnim2 : MonoBehaviour {
 
     private void Update()
     {
-        GameObject.Find("Mouse"+i).GetComponent<RectTransform>().position = transform.position = Vector3.Lerp(GameObject.Find("Mouse2").transform.position, Input.mousePosition, Time.deltaTime*j);
-        GameObject.Find("Mouse"+i).GetComponent<RectTransform>().Rotate(new Vector3(0f, 0f, -45f) * Time.deltaTime);
+        //Follow mouse slowly
+        // GameObject.Find("Mouse"+i).GetComponent<RectTransform>().position = transform.position = Vector3.Lerp(GameObject.Find("Mouse2").transform.position, Input.mousePosition, Time.deltaTime*j);
+        if(GameObject.Find("Mouse1").GetComponent<MouseAnim>().currentMouse == 2)
+        {
+            GameObject.Find("Mouse" + i).GetComponent<RectTransform>().Rotate(new Vector3(0f, 0f, -45f) * Time.deltaTime);
+            GameObject.Find("Mouse" + i).GetComponent<RectTransform>().position = Input.mousePosition;
+        }
+        else
+        {
+            GameObject.Find("Mouse" + i).GetComponent<RectTransform>().position = new Vector3(1000f, 0f, 0f);
+        }
+
+
     }
+
+
 
 }

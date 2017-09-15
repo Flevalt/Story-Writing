@@ -9,6 +9,7 @@ public class Load : MonoBehaviour {
     public SaveFile savefile;
     public Sprite savefilesprite;
     public GameObject content;
+    public inspection inspect;
     public Sprite Noch;
     public Sprite ch1;
     public Sprite ch2;
@@ -33,7 +34,7 @@ public class Load : MonoBehaviour {
     private GameObject Btn;
     private GameObject delBtn;
     private GameObject saveBtn;
-    private bool[] listenerAdded;
+    private bool[] listenerAdded; //savefile listeners
     private bool loadingSaves = true;
     private Navigation noneNav = new Navigation();
 
@@ -157,6 +158,7 @@ public class Load : MonoBehaviour {
             PlayerPrefs.SetInt("CharOn" + c, control.getCharOn());
             PlayerPrefs.SetInt("currentIndex" + c, novel.savedIndex);
             PlayerPrefs.SetInt("currentLine" + c, novel.getCurrentLine());
+            PlayerPrefs.SetInt("itemFound1" + c, inspect.itemFound1);
             PlayerPrefs.Save();
             //Set savefile-sprite
             GameObject.Find("Savefile(inst)" + c).GetComponent<Image>().sprite = ch1;
@@ -287,6 +289,25 @@ public class Load : MonoBehaviour {
         GameObject.Find("T9").GetComponent<CanvasRenderer>().SetAlpha(0f);
         GameObject.Find("Scrollbar").GetComponent<Scrollbar>().interactable = false;
         GameObject.Find("Scrollbar").GetComponent<CanvasRenderer>().SetAlpha(0f);
+
+        //exchange inspect element listeners
+        //TODO: Only load the objects during entering a room with such objects and NOT during loadData
+        inspect.instObject(1, 300f, -50f, 80f, 70f, 1, 1); //sink
+        inspect.instObject(2, 300f, -200f, 80f, 70f); //toillet
+        inspect.instObject(3, -220f, -180f, 240f, 120f); //bed
+        inspect.instObject(4, -30f, 225f, 80f, 50f); //ventilation shaft
+        inspect.instObject(5, 220f, -30f, 120f, 320f); //door
+        inspect.instObject(6, 90f, 60f, 100f, 100f, 1, 0); //screen
+        inspect.instObject(7, 150f, 200f, 250f, 70f); //lights
+        inspect.instObject(8, -20f, -100f, 80f, 90f); //chair
+
+        for (int j = 1; j < savefiles.Length + 1; j++)
+            {
+                if (PlayerPrefs.GetInt("itemFound" + j) == 1)
+                {
+                    inspect.changeListener(j);
+                }
+            }
     }
 
     public GameObject[] getSaveFiles()

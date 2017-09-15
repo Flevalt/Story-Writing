@@ -22,9 +22,8 @@ public class Novel : MonoBehaviour {
     {
         if(index == 1)
         {
-            // currL[0] = -1
+            // Start of Prologue/Ch0
             Ch1[0] = "Earth. \nThe only planet with the right conditions for life to form, that we know of.";
-            // currL[1] = 0
             Ch1[1] = "Right now, there are billions of people living on this dwarf of a planet among dozens of other lifeforms. All of them living out their fleeting lives.";
             Ch1[2] = "It didn't always used to look like this.";
             Ch1[3] = "The land we step on now used to be lava flowing around the surface. With close to no oxygen, it was nothing but a hostile molten sphere.";
@@ -32,14 +31,14 @@ public class Novel : MonoBehaviour {
             Ch1[5] = "In a way, you could say the Earth we know is nothing but a facade. Beautiful and lively on the outside, but its fiery and dangerous inner self still dormant inside.";
             Ch1[6] = "It makes you wonder for how long a place like Earth can act as a home to living creatures. And sometimes I wonder...";
             Ch1[7] = "...how many people can a small planet like Earth take?";
-            Ch1[8] = "uhn...";
+            Ch1[8] = "uhn..."; //Start of Ch1
             Ch1[9] = "nh...";
             Ch1[10] = "ah...!!";
             Ch1[11] = "This place...where am I?";
             Ch1[12] = "My body feels like I was hit by a truck.";
-            Ch1[13] = "I don't like the look of this. And this room gives off an eerie vibe.\n I'd better check outside.";
+            Ch1[13] = "I don't like the look of this. And this room gives off an eerie vibe.\n I'd better check outside."; //=>Inspection Mode
             Ch1[14] = "";
-            Ch1[15] = "Nnnngh...";
+            Ch1[15] = "Nnnngh..."; //=>Story Mode
             Ch1[16] = "What the heck? It won't open.";
             Ch1[17] = "Help! The door is stuck!";
             Ch1[18] = "Hello? Someone, heeelp!";
@@ -78,7 +77,7 @@ public class Novel : MonoBehaviour {
             Ch1[50] = "...";
             Ch1[51] = "The heck?";
             Ch1[52] = "And they even forgot to put the weapon in the room. What kind of half-assed project is this ? World saving my ass.";
-            Ch1[53] = "At least the door is open now. I'm getting out of here.";
+            Ch1[53] = "At least the door is open now. I'm getting out of here."; //=>Inspection Mode
             Ch1[54] = "its a sink.";
             Ch1[55] = "its a toillet.";
             Ch1[56] = "its a bed.";
@@ -87,6 +86,8 @@ public class Novel : MonoBehaviour {
             Ch1[59] = "its a screen.";
             Ch1[60] = "its a lights.";
             Ch1[61] = "its a chair.";
+            Ch1[62] = "There's nothing left in the sink.";
+            Ch1[63] = "The screen won't turn on.";
 
             return Ch1;
         }

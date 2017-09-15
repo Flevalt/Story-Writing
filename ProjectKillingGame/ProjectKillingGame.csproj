@@ -80,13 +80,16 @@
   <ItemGroup>
     <Compile Include="Assets\Materials\Bloom\Bloom.cs" />
     <Compile Include="Assets\Scripts\ArrowMove.cs" />
+    <Compile Include="Assets\Scripts\Blink.cs" />
     <Compile Include="Assets\Scripts\Controller.cs" />
+    <Compile Include="Assets\Scripts\Items.cs" />
     <Compile Include="Assets\Scripts\Load.cs" />
     <Compile Include="Assets\Scripts\LoadScene.cs" />
     <Compile Include="Assets\Scripts\MakeDragable.cs" />
     <Compile Include="Assets\Scripts\MenuColor.cs" />
     <Compile Include="Assets\Scripts\MouseAnim.cs" />
     <Compile Include="Assets\Scripts\MouseAnim2.cs" />
+    <Compile Include="Assets\Scripts\MouseHover.cs" />
     <Compile Include="Assets\Scripts\Novel.cs" />
     <Compile Include="Assets\Scripts\Quit.cs" />
     <Compile Include="Assets\Scripts\SaveFile.cs" />
