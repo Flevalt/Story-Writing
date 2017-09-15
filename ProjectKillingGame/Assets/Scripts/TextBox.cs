@@ -76,6 +76,7 @@ public class TextBox : MonoBehaviour {
         // Enable writing for inspection text
         else if (controller.enableWrite == false && controller.gameMode == 0 && GameObject.Find("iO(Inst)1") != null)
         {
+            //Textwrite
             if (Input.GetKeyDown("space") && inspect.inspectionType == 0)
             {
                 controller.gameMode = 1;
@@ -87,12 +88,9 @@ public class TextBox : MonoBehaviour {
                 GameObject.Find("T8").GetComponent<CanvasRenderer>().SetAlpha(0f);
                 controller.charDisplay(3);
 
-                for (int i = 1; i < 9; i++)
-                {
-                    GameObject.Find("iO(Inst)" + i).GetComponent<Button>().enabled = true;
-                }
+                GameObject.Find("InspectionElements").GetComponent<RectTransform>().localPosition = new Vector2(0f, 0f);
             }
-
+            // Item Found
             else if (Input.GetKeyDown("space") && inspect.inspectionType == 1)
             {
                 controller.gameMode = 1;
@@ -111,6 +109,7 @@ public class TextBox : MonoBehaviour {
                 inspect.changeListener(inspect.lastClicked);
 
             }
+            // Coins Found
             else if (Input.GetKeyDown("space") && inspect.inspectionType == 2)
             {
                 controller.gameMode = 1;
@@ -127,10 +126,93 @@ public class TextBox : MonoBehaviour {
 
                 inspect.changeListener(inspect.lastClicked);
             }
+            // Decision Time
+            else if (Input.GetKeyDown("space") && inspect.inspectionType == 3)
+            {
+                controller.gameMode = 1;
+                Destroy(GameObject.Find("textwriter(Inst)" + txtWriterNr));
+                GameObject.Find("Textbox").GetComponent<Text>().text = "";
+                GameObject.Find("UI_Panel").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                GameObject.Find("NameBox").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                GameObject.Find("T8").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                controller.charDisplay(3);
+
+
+                GameObject.Find("2Decision").GetComponent<RectTransform>().localPosition = new Vector2(0f, 0f);
+                StartCoroutine(decisionAppear());
+            }
+
         }
     }
 
-    IEnumerator coinObtainedAppear(int coinAmount)
+    IEnumerator decisionAppear()
+    {
+        //Decision window appear
+        for (int k = 0; k < 5; k++)
+        {
+            GameObject.Find("2Decision").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("2Decision").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+            GameObject.Find("Pick1").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("Pick1").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+            GameObject.Find("Pick2").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("Pick2").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+            GameObject.Find("2DecisionTextPanel").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("2DecisionTextPanel").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+            yield return new WaitForSeconds(0.08f);
+        }
+
+        for (int k = 0; k < 5; k++)
+        {
+            GameObject.Find("choice1").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("choice1").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+            GameObject.Find("choice2").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("choice2").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+            GameObject.Find("2DecisionText").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("2DecisionText").GetComponent<CanvasRenderer>().GetAlpha() + 0.2f);
+        }
+
+        //Choose decision based on id
+        switch (inspect.getDecision())
+        {
+            case 1: //weapon-pick decision
+                GameObject.Find("2DecisionText").GetComponent<Text>().text = "Pick up the Colt .357 Revolver?";
+                GameObject.Find("choice1").GetComponent<Text>().text = "Let's take it.";
+                GameObject.Find("choice2").GetComponent<Text>().text = "Leave it there.";
+                GameObject.Find("Pick1").GetComponent<Button>().onClick.AddListener(() => {
+                    // Change listener
+                    inspect.itemFound3 = 1;
+                    inspect.changeListener(inspect.lastClicked);
+
+                    //Decision window disappear
+                    GameObject.Find("2Decision").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                    GameObject.Find("Pick1").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                    GameObject.Find("Pick2").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                    GameObject.Find("2DecisionTextPanel").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                    GameObject.Find("choice1").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                    GameObject.Find("choice2").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                    GameObject.Find("2DecisionText").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                    GameObject.Find("2Decision").GetComponent<RectTransform>().localPosition = new Vector2(1000f, 0f);
+
+                    GameObject.Find("ItemObtained").GetComponent<RectTransform>().localPosition = new Vector2(0f, 19f);
+                    GameObject.Find("YouFound").GetComponent<RectTransform>().localPosition = new Vector2(0f, 0f);
+                    StartCoroutine(itemObtainedAppear(inspect.itemId));
+                });
+                GameObject.Find("Pick2").GetComponent<Button>().onClick.AddListener(() => {
+                    inspect.itemFound3 = 0;
+
+                    //Decision window disappear
+                    GameObject.Find("2Decision").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                    GameObject.Find("Pick1").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                    GameObject.Find("Pick2").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                    GameObject.Find("2DecisionTextPanel").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                    GameObject.Find("choice1").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                    GameObject.Find("choice2").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                    GameObject.Find("2DecisionText").GetComponent<CanvasRenderer>().SetAlpha(0f);
+
+                    GameObject.Find("2Decision").GetComponent<RectTransform>().localPosition = new Vector2(1000f, 0f);
+
+                    GameObject.Find("InspectionElements").GetComponent<RectTransform>().localPosition = new Vector2(0f, 0f);
+                });
+                break;
+        }
+
+    }
+
+        IEnumerator coinObtainedAppear(int coinAmount)
     {
 
         GameObject.Find("CoinNr").GetComponent<Text>().text = coinAmount.ToString();
@@ -155,17 +237,15 @@ public class TextBox : MonoBehaviour {
 
         GameObject.Find("CoinsObtained").GetComponent<RectTransform>().localPosition = new Vector2(1000f, 0f);
 
-        for (int i = 1; i < 9; i++)
-        {
-            GameObject.Find("iO(Inst)" + i).GetComponent<Button>().enabled = true;
-        }
+        GameObject.Find("InspectionElements").GetComponent<RectTransform>().localPosition = new Vector2(0f, 0f);
     }
 
     IEnumerator itemObtainedAppear(int itemID)
     {
+
         //Change Item image & text before displaying
         GameObject.Find("FoundItem").GetComponent<Image>().sprite = items.getItemSprite(itemID);
-        GameObject.Find("YouFoundText").GetComponent<Text>().text = GameObject.Find("YouFoundText").GetComponent<Text>().text + items.getItemName(itemID);
+        GameObject.Find("YouFoundText").GetComponent<Text>().text = "You found " + items.getItemName(itemID);
 
         //Display elements in the following order
         for (int k = 0; k < 5; k++)
@@ -194,26 +274,23 @@ public class TextBox : MonoBehaviour {
             yield return new WaitForSeconds(0.08f);
         }
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
 
         for (int k = 0; k < 5; k++)
         {
         GameObject.Find("YouFound").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("YouFound").GetComponent<CanvasRenderer>().GetAlpha() - 0.04f);
         GameObject.Find("ItemObtained").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("ItemObtained").GetComponent<CanvasRenderer>().GetAlpha() - 0.2f);
-        GameObject.Find("ItemBG").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("ObtainedText").GetComponent<CanvasRenderer>().GetAlpha() - 0.2f);
-        GameObject.Find("FoundItem").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("ItemBG").GetComponent<CanvasRenderer>().GetAlpha() - 0.2f);
-        GameObject.Find("YouFoundText").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("ItemBG").GetComponent<CanvasRenderer>().GetAlpha() - 0.2f);
-        GameObject.Find("ObtainedText").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("FoundItem").GetComponent<CanvasRenderer>().GetAlpha() - 0.2f);
+        GameObject.Find("ItemBG").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("ItemBG").GetComponent<CanvasRenderer>().GetAlpha() - 0.2f);
+        GameObject.Find("FoundItem").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("FoundItem").GetComponent<CanvasRenderer>().GetAlpha() - 0.2f);
+        GameObject.Find("YouFoundText").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("YouFoundText").GetComponent<CanvasRenderer>().GetAlpha() - 0.2f);
+        GameObject.Find("ObtainedText").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("ObtainedText").GetComponent<CanvasRenderer>().GetAlpha() - 0.2f);
         yield return new WaitForSeconds(0.08f);
         }
 
         GameObject.Find("ItemObtained").GetComponent<RectTransform>().localPosition = new Vector2(1000f, 0f);
         GameObject.Find("YouFound").GetComponent<RectTransform>().localPosition = new Vector2(1000f, 0f);
 
-        for (int i = 1; i < 9; i++)
-        {
-            GameObject.Find("iO(Inst)" + i).GetComponent<Button>().enabled = true;
-        }
+        GameObject.Find("InspectionElements").GetComponent<RectTransform>().localPosition = new Vector2(0f, 0f);
     }
 
     public void createTextWriterInst()

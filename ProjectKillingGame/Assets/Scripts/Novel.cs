@@ -88,6 +88,7 @@ public class Novel : MonoBehaviour {
             Ch1[61] = "its a chair.";
             Ch1[62] = "There's nothing left in the sink.";
             Ch1[63] = "The screen won't turn on.";
+            Ch1[64] = "There's nothing left in the shaft.";
 
             return Ch1;
         }

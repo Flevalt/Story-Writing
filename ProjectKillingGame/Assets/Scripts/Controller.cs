@@ -89,9 +89,9 @@ public class Controller : MonoBehaviour {
             StartCoroutine(DisplayCh1());
         }
 
-        if (gameMode == 1 && novel.getCurrentLine() == 14 && novel.savedIndex == 1)
+        if (gameMode == 0 && novel.getCurrentLine() == 15 && novel.savedIndex == 1)
         {
-            
+            StartCoroutine(DisplayCh1_1());
         }
     }
 
@@ -131,32 +131,37 @@ public class Controller : MonoBehaviour {
             stopWriting();
             textboxDisappear();
 
+            GameObject.Find("InspectionElements").GetComponent<RectTransform>().localPosition = new Vector2(0f, 0f);
             GameObject.Find("TutorialPanel").GetComponent<RectTransform>().Translate(new Vector2(675f, 0f));
             GameObject.Find("CloseTutorialPanel").GetComponent<Button>().onClick.AddListener(()=> {
                 GameObject.Find("TutorialPanel").GetComponent<RectTransform>().Translate(new Vector2(-675f, 0f));
                 inspection.instObject(1, 300f, -50f, 80f, 70f, 1, 1); //sink
                 inspection.instObject(2, 300f, -200f, 80f, 70f); //toillet
                 inspection.instObject(3, -220f, -180f, 240f, 120f); //bed
-                inspection.instObject(4, -30f, 225f, 80f, 50f); //ventilation shaft
-                inspection.instObject(5, 220f, -30f, 120f, 320f); //door
+                inspection.instObject(4, -30f, 225f, 80f, 50f, 3, 2, 1); //ventilation shaft
+                inspection.instStoryObject(5, 220f, -30f, 120f, 320f); //door
                 inspection.instObject(6, 90f, 60f, 100f, 100f, 2, 0); //screen
                 inspection.instObject(7, 150f, 200f, 250f, 70f); //lights
                 inspection.instObject(8, -20f, -100f, 80f, 90f); //chair
             });
         }
 
-        while (novel.getCurrentLine() == 18 && GameObject.Find("NameBox").GetComponent<CanvasRenderer>().GetAlpha() != 1f)
-        {
-            textboxAppear();
-            yield return new WaitForSeconds(0.08f);
-        }
-
-        if (novel.getCurrentLine() == 18)
+        if (novel.getCurrentLine() == 54)
         {
             textboxDisappear();
         }
 
         runDisplay = 0;
+    }
+
+    IEnumerator DisplayCh1_1()
+    {
+        while (novel.getCurrentLine() == 15 && GameObject.Find("NameBox").GetComponent<CanvasRenderer>().GetAlpha() != 1f)
+        {
+            textboxAppear();
+            yield return new WaitForSeconds(0.08f);
+        }
+        GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(1f);
     }
 
     IEnumerator DisplayCh0()

@@ -15,9 +15,11 @@ public class Items : MonoBehaviour {
         itemSprites = new Sprite[200];
         itemArray[0] = "Coins";
         itemArray[1] = "Globberus Maximus";
+        itemArray[2] = "Colt .357";
 
         itemSprites[0] = s1;
         itemSprites[1] = s2;
+        itemSprites[2] = s1;
     }
 
     public string getItemName(int i)

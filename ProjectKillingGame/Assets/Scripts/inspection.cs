@@ -53,6 +53,15 @@ public class inspection : MonoBehaviour {
 
     private void Start()
     {
+        //Hide Decision Menu
+        GameObject.Find("2Decision").GetComponent<CanvasRenderer>().SetAlpha(0f);
+        GameObject.Find("Pick1").GetComponent<CanvasRenderer>().SetAlpha(0f);
+        GameObject.Find("Pick2").GetComponent<CanvasRenderer>().SetAlpha(0f);
+        GameObject.Find("2DecisionTextPanel").GetComponent<CanvasRenderer>().SetAlpha(0f);
+        GameObject.Find("choice1").GetComponent<CanvasRenderer>().SetAlpha(0f);
+        GameObject.Find("choice2").GetComponent<CanvasRenderer>().SetAlpha(0f);
+        GameObject.Find("2DecisionText").GetComponent<CanvasRenderer>().SetAlpha(0f);
+
         //hide ItemObtained Menu 
         GameObject.Find("YouFound").GetComponent<CanvasRenderer>().SetAlpha(0f);
         GameObject.Find("ItemObtained").GetComponent<CanvasRenderer>().SetAlpha(0f);
@@ -64,9 +73,72 @@ public class inspection : MonoBehaviour {
         textbox = GameObject.Find("Textbox").GetComponent<TextBox>();
         controller = GameObject.Find("Controller").GetComponent<Controller>();
         novel = GameObject.Find("NovelStorage").GetComponent<Novel>();
+
+        GameObject.Find("InspectionElements").GetComponent<RectTransform>().localPosition = new Vector2(1000f, 0f);
     }
 
-    //instantiate itemFound 
+    //Create inspection element that switches to Story Mode
+    public void instStoryObject(int objectId, float xPos, float yPos, float width, float height)
+    {
+        GameObject iOO = new GameObject(objectId.ToString());
+        GameObject iO = Instantiate(iOO);
+        iO.name = "iO(Inst)" + objectId;
+        Destroy(iOO);
+
+        Image im = iO.AddComponent<Image>();
+        im.sprite = img;
+
+        iO.transform.SetParent(GameObject.Find("InspectionElements").transform, false);
+
+        iO.GetComponent<RectTransform>().localPosition = new Vector2(xPos, yPos);
+        iO.GetComponent<RectTransform>().sizeDelta = new Vector2(width, height);
+
+        noneNav.mode = Navigation.Mode.None;
+        Button btn = iO.AddComponent<Button>();
+        btn.navigation = noneNav;
+        btn.onClick.AddListener(() => {
+            lastClicked = objectId;
+
+            GameObject.Find("InspectionElements").GetComponent<RectTransform>().localPosition = new Vector2(1000f, 0f);
+
+            controller.gameMode = 0;
+            controller.charDisplay(1);
+            controller.enableWrite = true;
+            novel.setCurrentLine(15);
+            GameObject.Find("Textbox").GetComponent<Text>().text = novel.getCurrentCh(novel.savedIndex)[novel.getCurrentLine()];
+        });
+
+        iO.AddComponent<PolygonCollider2D>();
+        iO.AddComponent<MouseAnim>();
+        iO.AddComponent<MouseHover>();
+    }
+
+    //Create Decision inspection element
+    public void instObject(int objectId, float xPos, float yPos, float width, float height, int itemObjectID, int itemID, int decisionId)
+    {
+        GameObject iOO = new GameObject(objectId.ToString());
+        GameObject iO = Instantiate(iOO);
+        iO.name = "iO(Inst)" + objectId;
+        Destroy(iOO);
+
+        Image im = iO.AddComponent<Image>();
+        im.sprite = img;
+
+        iO.transform.SetParent(GameObject.Find("InspectionElements").transform, false);
+
+        iO.GetComponent<RectTransform>().localPosition = new Vector2(xPos, yPos);
+        iO.GetComponent<RectTransform>().sizeDelta = new Vector2(width, height);
+
+        noneNav.mode = Navigation.Mode.None;
+        Button btn = iO.AddComponent<Button>();
+        addbuttonDecisionListener(btn, itemObjectID, objectId, itemID, decisionId);
+
+        iO.AddComponent<PolygonCollider2D>();
+        iO.AddComponent<MouseAnim>();
+        iO.AddComponent<MouseHover>();
+    }
+
+    //instantiate inspection element that finds item
     // @objectID = inspection object; 
     // @itemObjectID = inspection object that drops items;
     // @itemID = the item that drops;
@@ -80,7 +152,7 @@ public class inspection : MonoBehaviour {
         Image im = iO.AddComponent<Image>();
         im.sprite = img;
 
-        iO.transform.SetParent(GameObject.Find("Canvas").transform, false);
+        iO.transform.SetParent(GameObject.Find("InspectionElements").transform, false);
 
         iO.GetComponent<RectTransform>().localPosition = new Vector2(xPos, yPos);
         iO.GetComponent<RectTransform>().sizeDelta = new Vector2(width, height);
@@ -94,7 +166,32 @@ public class inspection : MonoBehaviour {
         iO.AddComponent<MouseHover>();
     }
 
-    //add different listener during load
+    //add different listener for decisions
+    private void addbuttonDecisionListener(Button btn, int itemFoundId, int objectId, int itemID, int decisionID)
+    {
+        btn.navigation = noneNav;
+        switch (itemFoundId)
+        {
+            case 1:
+                break;
+            case 2:
+            case 3:
+                btn.onClick.AddListener(() => {
+                    lastClicked = objectId;
+                    itemId = itemID;
+                    inspectionType = 3; //decision
+                    decision = 1; //for switch case in TextBox
+                    displayText(objectId);
+                });
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+        }
+    }
+
+    //add different listener for itemFounds
     private void addbuttonListener(Button btn, int itemFoundId, int objectId, int itemID)
     {
         btn.navigation = noneNav;
@@ -139,7 +236,7 @@ public class inspection : MonoBehaviour {
         Image im = iO.AddComponent<Image>();
         im.sprite = img;
 
-        iO.transform.SetParent(GameObject.Find("Canvas").transform, false);
+        iO.transform.SetParent(GameObject.Find("InspectionElements").transform, false);
 
         iO.GetComponent<RectTransform>().localPosition = new Vector2(xPos, yPos);
         iO.GetComponent<RectTransform>().sizeDelta = new Vector2(width, height);
@@ -181,6 +278,11 @@ public class inspection : MonoBehaviour {
             case 3:
                 break;
             case 4:
+                GameObject.Find("iO(Inst)" + objectId).GetComponent<Button>().onClick.AddListener(() => {
+                    lastClicked = objectId; //for changing listener of lastClicked during Textbox
+                    inspectionType = 0;
+                    displayText(11);
+                });
                 break;
             case 5:
                 break;
@@ -191,10 +293,8 @@ public class inspection : MonoBehaviour {
 
     public void displayText(int id)
     {
-        for (int i=1;i<9;i++)
-        {
-            GameObject.Find("iO(Inst)" + i).GetComponent<Button>().enabled = false; 
-        }
+        GameObject.Find("InspectionElements").GetComponent<RectTransform>().localPosition = new Vector2(1000f, 0f);
+        GameObject.Find("Mouse1").GetComponent<MouseAnim>().changeMouse(1);
 
         GameObject.Find("UI_Panel").GetComponent<CanvasRenderer>().SetAlpha(1f);
         GameObject.Find("NameBox").GetComponent<CanvasRenderer>().SetAlpha(1f);
@@ -232,6 +332,9 @@ public class inspection : MonoBehaviour {
             case 10:
                 novel.setCurrentLine(63);
                 break;
+            case 11:
+                novel.setCurrentLine(64);
+                break;
         }
         controller.gameMode = 0;
         textbox.createTextWriterInst();
@@ -242,6 +345,11 @@ public class inspection : MonoBehaviour {
     public int getCoinAmount()
     {
         return coinAmount;
+    }
+
+    public int getDecision()
+    {
+        return decision;
     }
 
 }

@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 
 public class MouseHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
 
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         GameObject.Find("Mouse1").GetComponent<MouseAnim>().changeMouse(2);
@@ -15,5 +16,4 @@ public class MouseHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     {
         GameObject.Find("Mouse1").GetComponent<MouseAnim>().changeMouse(1);
     }
-
 }
