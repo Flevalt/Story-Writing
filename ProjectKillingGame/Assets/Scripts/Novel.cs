@@ -79,7 +79,14 @@ public class Novel : MonoBehaviour {
             Ch1[51] = "The heck?";
             Ch1[52] = "And they even forgot to put the weapon in the room. What kind of half-assed project is this ? World saving my ass.";
             Ch1[53] = "At least the door is open now. I'm getting out of here.";
-            Ch1[54] = "";
+            Ch1[54] = "its a sink.";
+            Ch1[55] = "its a toillet.";
+            Ch1[56] = "its a bed.";
+            Ch1[57] = "its a shaft.";
+            Ch1[58] = "its a door.";
+            Ch1[59] = "its a screen.";
+            Ch1[60] = "its a lights.";
+            Ch1[61] = "its a chair.";
 
             return Ch1;
         }

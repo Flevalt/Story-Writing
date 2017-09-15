@@ -29,6 +29,16 @@ public class TextWrite : MonoBehaviour {
         controller = GameObject.Find("Controller").GetComponent<Controller>();
     }
 
+    //normal writing function but without increasing linecount
+    public void attemptInspectionWriting()
+    {
+        writeCheck = tb.txtWriterNr;
+        loaded = false; //Reset loaded at beginning of the next writing sequence, in case the player pressed load AFTER the end of writing sequence
+        started = true;
+        textbox.text = "";
+        StartCoroutine(ReadChapter(novel.getCurrentLine(), novel.getCurrentCh(novel.savedIndex)));
+    }
+
     public void attemptWriting() {
         if (run == false) //Check every frame if in middle of chapter, otherwise do not read
         {

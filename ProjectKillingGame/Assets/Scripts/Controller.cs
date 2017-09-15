@@ -11,8 +11,8 @@ public class Controller : MonoBehaviour {
     public Novel novel;
     public inspection inspection;
     public int currentBG = 0;
-    public int gameMode = 0; //0 = reading, 1 = inspection, 2 = RPG
-    public bool enableWrite = true;
+    public int gameMode = 0; //0 = reading, 1 = inspection, 2 = RPG (checks in the TextWrite script if to write or not)
+    public bool enableWrite = true; // (checks in the TextBox script if to write or not. Only true during main storyline-text)
     private TextBox textbox;
     private int Char1;
     private int Char2;
@@ -82,7 +82,8 @@ public class Controller : MonoBehaviour {
         if (Input.GetKeyDown("space") && runDisplay == 0 && novel.getCurrentLine() == 0)
         {
             StartCoroutine(DisplayCh0());
-        } else if ((Input.GetKeyDown("space")||(skip.autoOn==true&& skip.skipOn == false) ||(skip.skipOn==true&&skip.autoOn==false)) 
+        }
+        else if ((Input.GetKeyDown("space")||(skip.autoOn==true&& skip.skipOn == false) ||(skip.skipOn==true&&skip.autoOn==false)) 
             && runDisplay==0 && novel.getCurrentLine()>=8)
         {
             StartCoroutine(DisplayCh1());
@@ -121,8 +122,9 @@ public class Controller : MonoBehaviour {
             charAppear(2);
         }
 
-        if (novel.getCurrentLine() == 14)
+        if (novel.getCurrentLine() == 14 && GameObject.Find("iO(Inst)1") == null && gameMode == 0)
         {
+            Debug.Log(novel.getCurrentLine());
             //enable inspection mode
             gameMode = 1;
             //disable writing visuals
@@ -130,14 +132,18 @@ public class Controller : MonoBehaviour {
             stopWriting();
             textboxDisappear();
 
-            inspection.instObject(1, 300f, -50f, 80f, 70f); //sink
-            inspection.instObject(2, 300f, -200f, 80f, 70f); //toillet
-            inspection.instObject(3, -220f, -180f, 240f, 120f); //bed
-            inspection.instObject(4, -30f, 225f, 80f, 50f); //ventilation shaft
-            inspection.instObject(5, 220f, -30f, 120f, 320f); //door
-            inspection.instObject(6, 90f, 60f, 100f, 100f); //screen
-            inspection.instObject(7, 150f, 200f, 250f, 70f); //lights
-            inspection.instObject(8, -20f, -100f, 80f, 90f); //chair
+            GameObject.Find("TutorialPanel").GetComponent<RectTransform>().Translate(new Vector2(675f, 0f));
+            GameObject.Find("CloseTutorialPanel").GetComponent<Button>().onClick.AddListener(()=> {
+                GameObject.Find("TutorialPanel").GetComponent<RectTransform>().Translate(new Vector2(-675f, 0f));
+                inspection.instObject(1, 300f, -50f, 80f, 70f); //sink
+                inspection.instObject(2, 300f, -200f, 80f, 70f); //toillet
+                inspection.instObject(3, -220f, -180f, 240f, 120f); //bed
+                inspection.instObject(4, -30f, 225f, 80f, 50f); //ventilation shaft
+                inspection.instObject(5, 220f, -30f, 120f, 320f); //door
+                inspection.instObject(6, 90f, 60f, 100f, 100f); //screen
+                inspection.instObject(7, 150f, 200f, 250f, 70f); //lights
+                inspection.instObject(8, -20f, -100f, 80f, 90f); //chair
+            });
         }
 
         while (novel.getCurrentLine() == 18 && GameObject.Find("NameBox").GetComponent<CanvasRenderer>().GetAlpha() != 1f)
@@ -238,7 +244,6 @@ public class Controller : MonoBehaviour {
         GameObject.Find("T6").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
         GameObject.Find("T7").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
         GameObject.Find("T8").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
-        GameObject.Find("TutorialPanel").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
     }
 
     public void stopWriting()
@@ -248,6 +253,7 @@ public class Controller : MonoBehaviour {
         GameObject.Find("Textbox").GetComponent<Text>().text = "";
     }
 
+    //for externally changing char display
     public void charDisplay(int charOn)
     {
         // 0 = 1on,2off, 1 = 1off,2on, 2 = 1on, 2on, 3 = 1off, 2off

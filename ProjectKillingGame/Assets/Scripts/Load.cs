@@ -35,6 +35,8 @@ public class Load : MonoBehaviour {
     private GameObject saveBtn;
     private bool[] listenerAdded;
     private bool loadingSaves = true;
+    private Navigation noneNav = new Navigation();
+
 
     public static Load Instance
     {
@@ -104,6 +106,8 @@ public class Load : MonoBehaviour {
         saveImg.rectTransform.sizeDelta = new Vector2(100f, 100f);
         BGInst.transform.SetParent(content.transform, false);
 
+        noneNav.mode = Navigation.Mode.None;
+
         BtnInst.GetComponent<SaveFile>().savefileindex = c;
         BGInst.name = "SaveFileBG(inst)" + BtnInst.GetComponent<SaveFile>().savefileindex; //rename each instance
         BtnInst.name = "Savefile(inst)" + BtnInst.GetComponent<SaveFile>().savefileindex; //rename each instance
@@ -124,6 +128,9 @@ public class Load : MonoBehaviour {
 
         Button button1 = delInst.AddComponent<Button>();
         Button button2 = saveInst.AddComponent<Button>();
+        button1.navigation = noneNav;
+        button2.navigation = noneNav;
+        button.navigation = noneNav;
         saveInst.transform.SetParent(BGInst.transform, false);
         delInst.transform.SetParent(BGInst.transform, false); //attach to btnBG
 
@@ -210,7 +217,7 @@ public class Load : MonoBehaviour {
         if (GameObject.Find("LoadMenu").GetComponent<CanvasRenderer>().GetAlpha() != 1f)
         {
             GameObject.Find("LoadMenu").GetComponent<CanvasRenderer>().SetAlpha(1f);
-            GameObject.Find("LoadMenu").GetComponent<RectTransform>().Translate(new Vector2(0f, 650f));
+            GameObject.Find("LoadMenu").GetComponent<RectTransform>().Translate(new Vector2(0f, 1360f));
             GameObject.Find("CloseLoadMenu").GetComponent<Button>().interactable = true;
             GameObject.Find("ScrollLoadedData").GetComponent<CanvasRenderer>().SetAlpha(1f);
             GameObject.Find("T9").GetComponent<CanvasRenderer>().SetAlpha(1f);
@@ -235,7 +242,7 @@ public class Load : MonoBehaviour {
         //Close Menu if open
         } else {
             GameObject.Find("LoadMenu").GetComponent<CanvasRenderer>().SetAlpha(0f);
-            GameObject.Find("LoadMenu").GetComponent<RectTransform>().Translate(new Vector2(0f, -450f));
+            GameObject.Find("LoadMenu").GetComponent<RectTransform>().Translate(new Vector2(0f, -1360f));
             GameObject.Find("CloseLoadMenu").GetComponent<Button>().interactable = false;
             GameObject.Find("ScrollLoadedData").GetComponent<CanvasRenderer>().SetAlpha(0f);
             GameObject.Find("T9").GetComponent<CanvasRenderer>().SetAlpha(0f);
