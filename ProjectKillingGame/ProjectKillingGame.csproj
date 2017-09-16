@@ -86,7 +86,6 @@
     <Compile Include="Assets\Scripts\Audio\SFXSlider.cs" />
     <Compile Include="Assets\Scripts\Audio\SoundContainer.cs" />
     <Compile Include="Assets\Scripts\Audio\VoiceSlider.cs" />
-    <Compile Include="Assets\Scripts\Blink.cs" />
     <Compile Include="Assets\Scripts\Controller.cs" />
     <Compile Include="Assets\Scripts\Items.cs" />
     <Compile Include="Assets\Scripts\Load.cs" />
@@ -94,9 +93,10 @@
     <Compile Include="Assets\Scripts\MakeDragable.cs" />
     <Compile Include="Assets\Scripts\MenuClicks.cs" />
     <Compile Include="Assets\Scripts\MenuColor.cs" />
-    <Compile Include="Assets\Scripts\MouseAnim.cs" />
-    <Compile Include="Assets\Scripts\MouseAnim2.cs" />
-    <Compile Include="Assets\Scripts\MouseHover.cs" />
+    <Compile Include="Assets\Scripts\MouseAnim\Blink.cs" />
+    <Compile Include="Assets\Scripts\MouseAnim\MouseAnim.cs" />
+    <Compile Include="Assets\Scripts\MouseAnim\MouseAnim2.cs" />
+    <Compile Include="Assets\Scripts\MouseAnim\MouseHover.cs" />
     <Compile Include="Assets\Scripts\Novel.cs" />
     <Compile Include="Assets\Scripts\Quit.cs" />
     <Compile Include="Assets\Scripts\SaveFile.cs" />

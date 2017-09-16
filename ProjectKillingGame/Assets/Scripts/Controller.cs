@@ -21,6 +21,7 @@ public class Controller : MonoBehaviour {
     private int CharOn; // For loading function. 0 = 1on,2off, 1 = 1off,2on, 2 = 1on, 2on, 3 = 1off, 2off
     Vector3 moveCam;
     Color erase = new Color(0f,0f,0f,1f); //color to erase alpha
+    public bool eventWait = false; // turns true while a sound or event plays to prevent textBox from writing before the event/sound ends. 
     private int runDisplay=0; // current displayRoutine to display
     private bool Ch1VisualsLoaded = false;
     private bool menuOpen = false;
@@ -143,6 +144,7 @@ public class Controller : MonoBehaviour {
         }
     }
 
+    //Chapter 1
     IEnumerator DisplayCh1()
     {
         runDisplay = 1;
@@ -165,7 +167,13 @@ public class Controller : MonoBehaviour {
             enableWrite = true;
         }
 
-        //TODO: scene pauses&sounds
+        //Event pauses & sounds
+        if (novel.getCurrentLine() == 19 || novel.getCurrentLine() == 20)
+        {
+            GameObject.Find("SFX2").GetComponent<AudioSource>().Play();
+            yield return new WaitForSeconds(2f);
+            eventWait = true;
+        }
 
 
         //change color for thought-text
@@ -402,6 +410,16 @@ public class Controller : MonoBehaviour {
     public int getCharOn()
     {
         return CharOn;
+    }
+
+    public int getRunDisplay()
+    {
+        return runDisplay;
+    }
+
+    public void setRunDisplay(int i)
+    {
+        runDisplay = i;
     }
 
     public void setCharOn(int i)

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class TextBox : MonoBehaviour {
 
+    public Novel novel;
     public Items items;
     private GameObject textwriter;
     private Controller controller;
@@ -13,6 +14,7 @@ public class TextBox : MonoBehaviour {
     GameObject textwr;
     private float f = 0.02f; //write delay, aka textspeed
     public int txtWriterNr = 1;
+    private bool eventWait = false; // only true in the case of a sound/event to prevent normal read chapter from working in that case 
 
     private void Awake()
     {
@@ -27,6 +29,13 @@ public class TextBox : MonoBehaviour {
     }
 	
 	void Update () {
+        //Line of every event/sound, eventWait is set to true 
+        //TODO: fix
+        if (novel.getCurrentLine() == 19 || novel.getCurrentLine() == 20) 
+        {
+            eventWait = true;
+        }
+
         if (textwr == null) {
             textwr = GameObject.Find("textwriter(Inst)" + txtWriterNr);
         }
@@ -59,19 +68,39 @@ public class TextBox : MonoBehaviour {
             textwr.AddComponent<TextWrite>();
             textwr.GetComponent<TextWrite>().setF(f);
             textwr.GetComponent<TextWrite>().attemptSkip();
-            //Normal ReadChapter-call
-        } else if (Input.GetKeyDown("space") && skip.skipOn == skip.autoOn)
+        }
+            //Normal Read-Chapter-call
+            //TODO: fix
+            else if (Input.GetKeyDown("space") && skip.skipOn == skip.autoOn && controller.getRunDisplay() == 0 && controller.eventWait == false && eventWait == false)
         {
-            GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
+                Debug.Log("case 3");
+                    GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
 
-            Destroy(GameObject.Find("textwriter(Inst)" + txtWriterNr));
-            GameObject textwr = Instantiate(textwriter);
+                    Destroy(GameObject.Find("textwriter(Inst)" + txtWriterNr));
+                    GameObject textwr = Instantiate(textwriter);
+                    txtWriterNr += 1;
+                    textwr.name = "textwriter(Inst)" + txtWriterNr;
+                    textwr.AddComponent<TextWrite>();
+                    textwr.GetComponent<TextWrite>().setF(f);
+                    textwr.GetComponent<TextWrite>().attemptWriting();
+        }
+            //Read-Chapter normally only AFTER Sound/Event is off
+            //TODO: fix
+            else if (skip.skipOn == skip.autoOn && controller.getRunDisplay() == 0 && controller.eventWait == true)
+            {
+                Debug.Log("case 4");
+                controller.eventWait = false;
+                eventWait = false;
+                GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
+
+                Destroy(GameObject.Find("textwriter(Inst)" + txtWriterNr));
+                GameObject textwr = Instantiate(textwriter);
                 txtWriterNr += 1;
                 textwr.name = "textwriter(Inst)" + txtWriterNr;
-            textwr.AddComponent<TextWrite>();
-            textwr.GetComponent<TextWrite>().setF(f);
-            textwr.GetComponent<TextWrite>().attemptWriting();
-        }
+                textwr.AddComponent<TextWrite>();
+                textwr.GetComponent<TextWrite>().setF(f);
+                textwr.GetComponent<TextWrite>().attemptWriting();
+            }
         }
         // Enable writing for inspection text
         else if (controller.enableWrite == false && controller.gameMode == 0 && GameObject.Find("iO(Inst)1") != null)
