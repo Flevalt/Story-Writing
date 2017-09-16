@@ -80,12 +80,19 @@
   <ItemGroup>
     <Compile Include="Assets\Materials\Bloom\Bloom.cs" />
     <Compile Include="Assets\Scripts\ArrowMove.cs" />
+    <Compile Include="Assets\Scripts\Audio\AudioControl.cs" />
+    <Compile Include="Assets\Scripts\Audio\BGMContainer.cs" />
+    <Compile Include="Assets\Scripts\Audio\BGMSlider.cs" />
+    <Compile Include="Assets\Scripts\Audio\SFXSlider.cs" />
+    <Compile Include="Assets\Scripts\Audio\SoundContainer.cs" />
+    <Compile Include="Assets\Scripts\Audio\VoiceSlider.cs" />
     <Compile Include="Assets\Scripts\Blink.cs" />
     <Compile Include="Assets\Scripts\Controller.cs" />
     <Compile Include="Assets\Scripts\Items.cs" />
     <Compile Include="Assets\Scripts\Load.cs" />
     <Compile Include="Assets\Scripts\LoadScene.cs" />
     <Compile Include="Assets\Scripts\MakeDragable.cs" />
+    <Compile Include="Assets\Scripts\MenuClicks.cs" />
     <Compile Include="Assets\Scripts\MenuColor.cs" />
     <Compile Include="Assets\Scripts\MouseAnim.cs" />
     <Compile Include="Assets\Scripts\MouseAnim2.cs" />

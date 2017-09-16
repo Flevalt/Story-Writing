@@ -5,11 +5,13 @@ using UnityEngine.UI;
 
 public class Controller : MonoBehaviour {
 
+    public MenuClicks menuclicks;
     public Load LoadMenu;
     public Skip skip;
     public SpriteCon spriteCon;
     public Novel novel;
     public inspection inspection;
+    public Quit quit;
     public int currentBG = 0;
     public int gameMode = 0; //0 = reading, 1 = inspection, 2 = RPG (checks in the TextWrite script if to write or not)
     public bool enableWrite = true; // (checks in the TextBox script if to write or not. Only true during main storyline-text)
@@ -21,6 +23,7 @@ public class Controller : MonoBehaviour {
     Color erase = new Color(0f,0f,0f,1f); //color to erase alpha
     private int runDisplay=0; // current displayRoutine to display
     private bool Ch1VisualsLoaded = false;
+    private bool menuOpen = false;
 
     public Sprite yes;
     public Sprite no;
@@ -58,6 +61,7 @@ public class Controller : MonoBehaviour {
     }
 
     void Start () {
+
 		if(novel.getCurrentLine() != -1) { //While not at beginning of Chapter
             GameObject.Find("UI_Panel").GetComponent<CanvasRenderer>().SetAlpha(1f);
             charAppear(1);
@@ -78,7 +82,51 @@ public class Controller : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        //Menu Controls
+        if (gameMode == 1 && Input.GetKeyDown("escape") && menuclicks.getCompOpen() == true)
+        {
+            GameObject.Find("Compendium").GetComponentInChildren<RectTransform>().position = new Vector2(2000f, 0f);
+            menuclicks.setCompOpen(false);
+        }
+        else if (gameMode == 1 && Input.GetKeyDown("escape") && menuclicks.getSettingsOpen() == true)
+        {
+            GameObject.Find("Settings").GetComponentInChildren<RectTransform>().position = new Vector2(2000f, 0f);
+            menuclicks.setSettingsOpen(false);
+        }
+        else if (gameMode == 1 && Input.GetKeyDown("escape") && menuclicks.getMapOpen() == true)
+        {
+            GameObject.Find("Map").GetComponentInChildren<RectTransform>().position = new Vector2(2000f, 0f);
+            menuclicks.setMapOpen(false);
+        }
+        else if (gameMode == 1 && Input.GetKeyDown("escape") && menuclicks.getStatOpen() == true)
+        {
+            GameObject.Find("StatusOverview").GetComponentInChildren<RectTransform>().position = new Vector2(2000f, 0f);
+            menuclicks.setStatOpen(false);
+        }
+        else if (gameMode == 1 && Input.GetKeyDown("escape") && menuOpen == false)
+        {
+            menuOpen = true;
+            GameObject.Find("GameMenu").GetComponentInChildren<RectTransform>().position = new Vector2(340f, 250f);
+        }
+        else if (gameMode == 1 && Input.GetKeyDown("escape") && menuOpen == true && quit.getQuitting() == false)
+        {
+            GameObject.Find("GameMenu").GetComponentInChildren<RectTransform>().position = new Vector2(2000f, 0f);
+            menuOpen = false;
+        }
+        else if (gameMode == 1 && Input.GetKeyDown("escape") && menuOpen == true && quit.getQuitting() == true)
+        {
+            quit.setQuitting(false);
+            GameObject.Find("2Decision").GetComponent<CanvasRenderer>().SetAlpha(0f);
+            GameObject.Find("Pick1").GetComponent<CanvasRenderer>().SetAlpha(0f);
+            GameObject.Find("Pick2").GetComponent<CanvasRenderer>().SetAlpha(0f);
+            GameObject.Find("2DecisionTextPanel").GetComponent<CanvasRenderer>().SetAlpha(0f);
+            GameObject.Find("choice1").GetComponent<CanvasRenderer>().SetAlpha(0f);
+            GameObject.Find("choice2").GetComponent<CanvasRenderer>().SetAlpha(0f);
+            GameObject.Find("2DecisionText").GetComponent<CanvasRenderer>().SetAlpha(0f);
+            GameObject.Find("2Decision").GetComponent<RectTransform>().localPosition = new Vector2(1000f, 0f);
+        }
 
+        //Display Chapters
         if (Input.GetKeyDown("space") && runDisplay == 0 && novel.getCurrentLine() == 0)
         {
             StartCoroutine(DisplayCh0());
@@ -89,7 +137,7 @@ public class Controller : MonoBehaviour {
             StartCoroutine(DisplayCh1());
         }
 
-        if (gameMode == 0 && novel.getCurrentLine() == 15 && novel.savedIndex == 1)
+        if (gameMode == 0 && novel.getCurrentLine() == 18 && novel.savedIndex == 1)
         {
             StartCoroutine(DisplayCh1_1());
         }
@@ -117,12 +165,25 @@ public class Controller : MonoBehaviour {
             enableWrite = true;
         }
 
+        //TODO: scene pauses&sounds
+
+
+        //change color for thought-text
+        if (novel.getCurrentLine() == 9 || novel.getCurrentLine() == 12 || novel.getCurrentLine() == 14 || 
+            novel.getCurrentLine() == 24 || novel.getCurrentLine() == 29 || novel.getCurrentLine() > 35 && novel.getCurrentLine() < 45)
+        {
+            GameObject.Find("Textbox").GetComponent<Text>().color = new Color(0f, 0.8f, 0.8f);
+        } else
+        {
+            GameObject.Find("Textbox").GetComponent<Text>().color = new Color(1f, 1f, 1f);
+        }
+
         if (novel.getCurrentLine() == 9)
         {
             charAppear(2);
         }
 
-        if (novel.getCurrentLine() == 14 && GameObject.Find("iO(Inst)1") == null && gameMode == 0)
+        if (novel.getCurrentLine() == 17 && GameObject.Find("iO(Inst)1") == null && gameMode == 0)
         {
             //enable inspection mode
             gameMode = 1;
@@ -146,7 +207,7 @@ public class Controller : MonoBehaviour {
             });
         }
 
-        if (novel.getCurrentLine() == 54)
+        if (novel.getCurrentLine() == 74)
         {
             textboxDisappear();
         }
@@ -156,7 +217,7 @@ public class Controller : MonoBehaviour {
 
     IEnumerator DisplayCh1_1()
     {
-        while (novel.getCurrentLine() == 15 && GameObject.Find("NameBox").GetComponent<CanvasRenderer>().GetAlpha() != 1f)
+        while (novel.getCurrentLine() == 18 && GameObject.Find("NameBox").GetComponent<CanvasRenderer>().GetAlpha() != 1f)
         {
             textboxAppear();
             yield return new WaitForSeconds(0.08f);

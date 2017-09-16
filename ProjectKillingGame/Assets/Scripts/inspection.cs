@@ -104,7 +104,7 @@ public class inspection : MonoBehaviour {
             controller.gameMode = 0;
             controller.charDisplay(1);
             controller.enableWrite = true;
-            novel.setCurrentLine(15);
+            novel.setCurrentLine(18);
             GameObject.Find("Textbox").GetComponent<Text>().text = novel.getCurrentCh(novel.savedIndex)[novel.getCurrentLine()];
         });
 
@@ -303,37 +303,37 @@ public class inspection : MonoBehaviour {
         switch (id)
         {
             case 1:
-                novel.setCurrentLine(54);
+                novel.setCurrentLine(74);
                 break;
             case 2:
-                novel.setCurrentLine(55);
+                novel.setCurrentLine(75);
                 break;
             case 3:
-                novel.setCurrentLine(56);
+                novel.setCurrentLine(76);
                 break;
             case 4:
-                novel.setCurrentLine(57);
+                novel.setCurrentLine(77);
                 break;
             case 5:
-                novel.setCurrentLine(58);
+                novel.setCurrentLine(78);
                 break;
             case 6:
-                novel.setCurrentLine(59);
+                novel.setCurrentLine(79);
                 break;
             case 7:
-                novel.setCurrentLine(60);
+                novel.setCurrentLine(80);
                 break;
             case 8:
-                novel.setCurrentLine(61);
+                novel.setCurrentLine(81);
                 break;
             case 9:
-                novel.setCurrentLine(62);
+                novel.setCurrentLine(82);
                 break;
             case 10:
-                novel.setCurrentLine(63);
+                novel.setCurrentLine(83);
                 break;
             case 11:
-                novel.setCurrentLine(64);
+                novel.setCurrentLine(84);
                 break;
         }
         controller.gameMode = 0;
