@@ -22,6 +22,13 @@ public class TitleWrite : MonoBehaviour {
         }
     }
 
+    //externall call of hideTitle
+    public void hideTitle()
+    {
+        Debug.Log("hidetitle");
+        StartCoroutine(hideSmallTitles());
+    }
+
     //external call of displayTitle
     public void displayTitle(int titleId, int colorId)
     {
@@ -30,13 +37,28 @@ public class TitleWrite : MonoBehaviour {
         StartCoroutine(displaySmallTitles());
     }
 
+    //hides the title
+    IEnumerator hideSmallTitles()
+    {
+        Debug.Log("hidetitle2");
+        while (GameObject.Find("Title").GetComponent<CanvasRenderer>().GetAlpha() > 0f)
+        {
+            Debug.Log("hidetitle3");
+            GameObject.Find("Title").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("Title").GetComponent<CanvasRenderer>().GetAlpha() - 0.052f);
+            yield return new WaitForSeconds(0.08f);
+        }
+        GameObject.Find("Title").GetComponent<RectTransform>().localPosition = new Vector3(1000f, 0f, 0f);
+    }
+
     //displays titles that are not the beginning
     IEnumerator displaySmallTitles()
     {
+        Debug.Log("displayTitle2");
         GameObject.Find("Title").GetComponent<RectTransform>().localPosition = new Vector3(-9f, 30f, 0f);
-        while (GameObject.Find("Title").GetComponent<CanvasRenderer>().GetAlpha() != 1f)
+        while (GameObject.Find("Title").GetComponent<CanvasRenderer>().GetAlpha() < 1f)
         {
-            GameObject.Find("Title").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("Title").GetComponent<CanvasRenderer>().GetAlpha() + 0.025f);
+            Debug.Log("displayTitle3");
+            GameObject.Find("Title").GetComponent<CanvasRenderer>().SetAlpha(GameObject.Find("Title").GetComponent<CanvasRenderer>().GetAlpha() + 0.052f);
             yield return new WaitForSeconds(0.08f);
         }
     }

@@ -107,6 +107,8 @@ public class inspection : MonoBehaviour {
             novel.setCurrentLine(18);
             GameObject.Find("Textbox").GetComponent<Text>().text = novel.getCurrentCh(novel.savedIndex)[novel.getCurrentLine()];
             controller.startCh1_1();
+            GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0f);
+            textbox.playSFX();
         });
 
         iO.AddComponent<PolygonCollider2D>();

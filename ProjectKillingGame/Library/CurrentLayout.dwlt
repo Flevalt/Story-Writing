@@ -20,7 +20,7 @@ MonoBehaviour:
   m_ShowMode: 4
   m_Title: 
   m_RootView: {fileID: 2}
-  m_MinSize: {x: 950, y: 542}
+  m_MinSize: {x: 950, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &2
 MonoBehaviour:
@@ -329,21 +329,21 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 46d9f8ffe0fbffff000000005a270000862800001c2a0000
+    m_ExpandedIDs: 0a3ef9ffe0fbffff000000005a2700009a27000086280000902800001c2a0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: 
-      m_OriginalName: 
+      m_Name: BlackFog2
+      m_OriginalName: BlackFog2
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 0
+      m_UserData: -442870
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 11
+      m_OriginalEventType: 0
       m_IsRenamingFilename: 0
       m_ClientGUIView: {fileID: 8}
     m_SearchString: 
@@ -379,14 +379,14 @@ MonoBehaviour:
     width: 681
     height: 517
   m_SceneLighting: 1
-  lastFramingTime: 13858.926953872298
+  lastFramingTime: 10277.100745329002
   m_2DMode: 1
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 455.60492, y: 171.18047, z: 0}
+    m_Target: {x: 832.1943, y: 0.24088381, z: 0}
     speed: 2
-    m_Value: {x: 455.60492, y: 171.18047, z: 0}
+    m_Value: {x: 832.1943, y: 0.24088381, z: 0}
   m_RenderMode: 0
   m_ValidateTrueMetals: 0
   m_SceneViewState:
@@ -413,9 +413,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 610.9817
+    m_Target: 1587.8416
     speed: 2
-    m_Value: 610.9817
+    m_Value: 1587.8416
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -565,19 +565,19 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 0
     m_Folders:
-    - Assets/Scripts
+    - Assets/GFX/BGs
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scripts
+  - Assets/GFX/BGs
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\Public\Documents\Unity Projects\ProjectKillingGame
   m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 25}
-    m_SelectedIDs: 74260000
-    m_LastClickedID: 9844
-    m_ExpandedIDs: 00000000f424000076250000962500001e2600007426000000ca9a3bffffff7f
+    scrollPos: {x: 0, y: 0}
+    m_SelectedIDs: 96250000
+    m_LastClickedID: 9622
+    m_ExpandedIDs: 00000000f424000076250000962500001e26000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -605,7 +605,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000f4240000962500001e26000074260000
+    m_ExpandedIDs: 00000000f424000076250000962500001e26000074260000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 

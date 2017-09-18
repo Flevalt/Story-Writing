@@ -44,10 +44,10 @@ public class Novel : MonoBehaviour {
 
             Ch1[18] = "Nnnngh..."; //=>Story Mode //door sound
             Ch1[19] = "What the heck? It won't open.";
-            //Pound against door sound
+            //Pound against door sound 1
             Ch1[20] = "Help! The door is stuck!";
             Ch1[21] = "Hello? Someone, help!";
-            //Pound against door sound + Title: 30 minutes later
+            //Pound against door sound 2 + Title: 30 minutes later
             Ch1[22] = "Help! Can't anybody hear me?";
             //Title: 2 hours later
             Ch1[23] = "...";
@@ -57,8 +57,8 @@ public class Novel : MonoBehaviour {
             Ch1[27] = "What's up with this place anyway? It looks like a prison cell.";
             Ch1[28] = "Isn't there any way to escape?";
             Ch1[29] = "After sitting in the cold room for what must have been hours, I started to lose hope that I'd ever get out of there. But then..."; //
-            // Doorhandle-rattle
-            Ch1[30] = "!";
+            // Small Doorhandle-rattle or Knock
+            Ch1[30] = "!"; // TODO: font size = +30?
             Ch1[31] = "S-Someone finally came.";
             Ch1[32] = "Hey! I'm stuck in here, can you please call someone to open..."; //Sabrina
             Ch1[33] = "LET ME IN!";// Doorhandle-rattle // ???
@@ -66,8 +66,9 @@ public class Novel : MonoBehaviour {
             Ch1[35] = "OPEN! OPEN THE DOOR GODDAMNIT!";// ??? //Doorhandle-rattle
             Ch1[36] = "As the man on the other side of the door screamed his lungs out, a feeling of uneasiness overcame me."; // Doorhandle-rattle // Sabrina
             Ch1[37] = "I wasn't sure where it came from or since when it started to appear, but a dense fog was now filling the room."; // Doorhandle-rattle
-            Ch1[38] = "After that sound, the door rattling stopped."; //
-            Ch1[39] = "I had distanced myself from the door and was confused about the situation. But a certainty made its way into my mind. No matter what anyone would have said to me at that point, I would have still been convinced of this one fact."; //
+            // Intense Scream sound
+            Ch1[38] = "After that sound, the door rattling stopped. And the fog dissipated unnaturally quickly"; //
+            Ch1[39] = "I wanted to open my mouth and ask whether the man was still there, but my body wouldn't listen, because a certainty made its way into my mind. No matter what anyone would have said to me at that point, I would have still been convinced of this one fact."; //
             Ch1[40] = "That man is dead."; //
             Ch1[41] = "I could try to puzzle the pieces together how I wanted, the outcome would still be the same to me."; //
             Ch1[42] = "I'm not even sure why I'm so convinced. But that man is undoubtedly dead. I was certain."; //

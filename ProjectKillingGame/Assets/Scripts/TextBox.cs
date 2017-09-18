@@ -17,6 +17,8 @@ public class TextBox : MonoBehaviour {
     private float f = 0.02f; //write delay, aka textspeed
     public int txtWriterNr = 1;
     private bool eventWait = false; // only true in the case of a sound/event to prevent normal read chapter from working in that case 
+    private bool eventCall = false; //turns true when an eventDisplay call is ready and turns false again after the eventDisplay was executed.
+    private bool eventCalled = true; //alternates with eventCall. Only 1 of both can be true at all times.
 
     private void Awake()
     {
@@ -110,14 +112,47 @@ public class TextBox : MonoBehaviour {
             //Normal Read-Chapter-call
             else if (Input.GetKeyDown("space") && skip.skipOn == skip.autoOn && eventWait == false)
         {
-                //displays cutscene
-                if (novel.getCurrentLine() == 21)
+                //checks if eventlines n-1 are reached.
+                if(eventCalled == true)
                 {
-                    StartCoroutine(displayEvent(0));
-                }
+                    switch (novel.getCurrentLine())
+                    {
+                        case 19:
+                        case 21:
+                        case 22:
+                        case 29:
+                            eventCall = true;
+                            eventCalled = false;
+                            break;
+                    }
+                } else {
+                    eventCall = false;
+                        }
 
-                //writes the text
-                Debug.Log("case 3");
+                //prevents reading if eventline is reached and plays event instead.
+                if(eventCall == true)
+                {
+                //displays cutscene
+                switch (novel.getCurrentLine())
+                {
+                    case 21:
+                        StartCoroutine(displayEvent(0));
+                        break;
+                    case 19:
+                        StartCoroutine(displayEvent(1));
+                        break;
+                    case 22:
+                        StartCoroutine(displayEvent(2));
+                        break;
+                        case 29:
+                        StartCoroutine(displayEvent(3));
+                        break;
+                }
+                    eventCall = false;
+                } else //otherwise reads normally if no event is currently ongoing
+                {
+                    //writes the text
+                    Debug.Log("case 3: Normal Read");
                     GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
 
                     Destroy(GameObject.Find("textwriter(Inst)" + txtWriterNr));
@@ -128,34 +163,45 @@ public class TextBox : MonoBehaviour {
                     textwr.GetComponent<TextWrite>().setF(f);
                     textwr.GetComponent<TextWrite>().attemptWriting();
 
-                //change namebox & chars
-                switch (novel.getCurrentLine())
-                {
-                    case 33: case 35:
-                        GameObject.Find("NameBox").GetComponent<Text>().text = "???";
-                        controller.charDisplay(2);
-                        GameObject.Find("Char1").GetComponent<Image>().sprite = spritecontainer.loadAvatar(1);
-                        break;
-                }
+                    //change namebox & chars
+                    switch (novel.getCurrentLine())
+                    {
+                        case 33: case 35:
+                            GameObject.Find("T8").GetComponent<Text>().text = "???";
+                            controller.charDisplay(2);
+                            GameObject.Find("Char2").GetComponent<CanvasRenderer>().SetAlpha(0.4f);
+                            GameObject.Find("Char1").GetComponent<Image>().sprite = spritecontainer.loadAvatar(21);
+                            break;
+                        case 34:
+                        case 36:
+                            GameObject.Find("Char2").GetComponent<CanvasRenderer>().SetAlpha(1f);
+                            GameObject.Find("Char1").GetComponent<CanvasRenderer>().SetAlpha(0.4f);
+                            GameObject.Find("T8").GetComponent<Text>().text = "Sabrina";
+                            break;
+                        case 37:
+                            controller.charDisplay(1);
+                            GameObject.Find("BlackFog2").GetComponent<RectTransform>().localPosition = new Vector3(0f,0f,0f);
+                            break;
+                        case 38:
+                            controller.charDisplay(1);
+                            GameObject.Find("BlackFog2").GetComponent<RectTransform>().localPosition = new Vector3(1000f, 0f, 0f);
+                            break;
+                    }
 
-                //change color for thought-text
-                if (novel.getCurrentLine() == 9 || novel.getCurrentLine() == 12 || novel.getCurrentLine() == 14 ||
-                    novel.getCurrentLine() == 24 || novel.getCurrentLine() == 29 || novel.getCurrentLine() > 35 && novel.getCurrentLine() < 45)
-                {
-                    Debug.Log("colorchange in " + novel.getCurrentLine());
-                    GameObject.Find("Textbox").GetComponent<Text>().color = new Color(0f, 0.8f, 0.8f);
-                }
-                else
-                {
-                    GameObject.Find("Textbox").GetComponent<Text>().color = new Color(1f, 1f, 1f);
-                }
+                    //change color for thought-text
+                    if (novel.getCurrentLine() == 9 || novel.getCurrentLine() == 12 || novel.getCurrentLine() == 14 ||
+                        novel.getCurrentLine() == 24 || novel.getCurrentLine() == 29 || novel.getCurrentLine() > 35 && novel.getCurrentLine() < 45)
+                    {
+                        Debug.Log("colorchange in " + novel.getCurrentLine());
+                        GameObject.Find("Textbox").GetComponent<Text>().color = new Color(0f, 0.8f, 0.8f);
+                    }
+                    else
+                    {
+                        GameObject.Find("Textbox").GetComponent<Text>().color = new Color(1f, 1f, 1f);
+                    }
 
-                //looping Sounds & Pauses
-                if (novel.getCurrentLine() == 19 || novel.getCurrentLine() == 20)
-                {
-                    StartCoroutine(playSound());
+                    eventCalled = true; //reset checking for eventDisplay
                 }
-
         }
 
         }
@@ -231,6 +277,47 @@ public class TextBox : MonoBehaviour {
         }
     }
 
+    //separate call of NormalRead outside of Update
+    public void attemptNormalRead()
+    {
+        //writes the text
+        Debug.Log("case 3: Normal Read");
+        GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0.00f);
+
+        Destroy(GameObject.Find("textwriter(Inst)" + txtWriterNr));
+        GameObject textwr = Instantiate(textwriter);
+        txtWriterNr += 1;
+        textwr.name = "textwriter(Inst)" + txtWriterNr;
+        textwr.AddComponent<TextWrite>();
+        textwr.GetComponent<TextWrite>().setF(f);
+        textwr.GetComponent<TextWrite>().attemptWriting();
+
+        //change namebox & chars
+        switch (novel.getCurrentLine())
+        {
+            case 33:
+            case 35:
+                GameObject.Find("NameBox").GetComponent<Text>().text = "???";
+                controller.charDisplay(2);
+                GameObject.Find("Char1").GetComponent<Image>().sprite = spritecontainer.loadAvatar(1);
+                break;
+        }
+
+        //change color for thought-text
+        if (novel.getCurrentLine() == 9 || novel.getCurrentLine() == 12 || novel.getCurrentLine() == 14 ||
+            novel.getCurrentLine() == 24 || novel.getCurrentLine() == 29 || novel.getCurrentLine() > 35 && novel.getCurrentLine() < 45)
+        {
+            Debug.Log("colorchange in " + novel.getCurrentLine());
+            GameObject.Find("Textbox").GetComponent<Text>().color = new Color(0f, 0.8f, 0.8f);
+        }
+        else
+        {
+            GameObject.Find("Textbox").GetComponent<Text>().color = new Color(1f, 1f, 1f);
+        }
+
+        eventCalled = true; //reset checking for eventDisplay
+    }
+
     // Displays different events depending on switch case including play sound, display title, pauses etc.
     IEnumerator displayEvent(int eventId)
     {
@@ -238,22 +325,74 @@ public class TextBox : MonoBehaviour {
         switch (eventId)
         {
             case 0:
+                //...30 minutes later...
+                Destroy(GameObject.Find("textwriter(Inst)" + txtWriterNr));
+                controller.charDisplay(3);
+                GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                GameObject.Find("Textbox").GetComponent<Text>().text = "";
                 GameObject.Find("BlackFog").GetComponent<CanvasRenderer>().SetAlpha(0.8f);
                 GameObject.Find("BlackFog").GetComponent<Transform>().localPosition = new Vector3(0f,0f,0f);
-                GameObject.Find("SFX2").GetComponent<AudioSource>().Play();
-                titlewrite.displayTitle(4, 0);
+                titlewrite.displayTitle(4, 0); //fade in title: 30 minutes later
+                GameObject.Find("SFX3").GetComponent<AudioSource>().Play();
                 yield return new WaitForSeconds(2f);
+                titlewrite.hideTitle(); //fade out title
+                GameObject.Find("SFX3").GetComponent<AudioSource>().Play();
+                yield return new WaitForSeconds(2f);
+                GameObject.Find("BlackFog").GetComponent<Transform>().localPosition = new Vector3(1000f, 0f, 0f);
+                GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(1f);
+                controller.charDisplay(1);
+                break;
+            case 1:
+                // Door Pound before 30 minutes later
+                Destroy(GameObject.Find("textwriter(Inst)" + txtWriterNr));
+                GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                GameObject.Find("Textbox").GetComponent<Text>().text = "";
+                GameObject.Find("SFX3").GetComponent<AudioSource>().Play();
+                yield return new WaitForSeconds(2f);
+                GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(1f);
+                break;
+            case 2:
+                // ...2 hours later...
+                controller.charDisplay(3);
+                Destroy(GameObject.Find("textwriter(Inst)" + txtWriterNr));
+                GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                GameObject.Find("Textbox").GetComponent<Text>().text = "";
+                GameObject.Find("BlackFog").GetComponent<CanvasRenderer>().SetAlpha(0.8f);
+                GameObject.Find("BlackFog").GetComponent<Transform>().localPosition = new Vector3(0f, 0f, 0f);
+                titlewrite.displayTitle(5, 0); //fade in title: 2 hours later
+                yield return new WaitForSeconds(2f);
+                titlewrite.hideTitle(); //fade out title
+                yield return new WaitForSeconds(2f);
+                GameObject.Find("BlackFog").GetComponent<Transform>().localPosition = new Vector3(1000f, 0f, 0f);
+                GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(1f);
+                controller.charDisplay(1);
+                break;
+            case 3:
+                controller.charDisplay(3);
+                Destroy(GameObject.Find("textwriter(Inst)" + txtWriterNr));
+                GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                GameObject.Find("Textbox").GetComponent<Text>().text = "";
+                GameObject.Find("SFX4").GetComponent<AudioSource>().Play();
+                yield return new WaitForSeconds(2.1f);
+                controller.charDisplay(1);
+                GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(1f);
                 break;
         }
         eventWait = false;
     }
 
-    //Plays sound during text TODO: loop the sound
+    //external call of play sound
+    public void playSFX()
+    {
+        StartCoroutine(playSound());
+    }
+
+    //Plays sound during text
     IEnumerator playSound()
     {
             eventWait = true;
-            GameObject.Find("SFX2").GetComponent<AudioSource>().Play();
-            yield return new WaitForSeconds(2f);
+            GameObject.Find("SFX5").GetComponent<AudioSource>().Play();
+            yield return new WaitForSeconds(0.5f);
             eventWait = false;
     }
 
