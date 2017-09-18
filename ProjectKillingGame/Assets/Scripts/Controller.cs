@@ -21,7 +21,6 @@ public class Controller : MonoBehaviour {
     private int CharOn; // For loading function. 0 = 1on,2off, 1 = 1off,2on, 2 = 1on, 2on, 3 = 1off, 2off
     Vector3 moveCam;
     Color erase = new Color(0f,0f,0f,1f); //color to erase alpha
-    public bool eventWait = false; // turns true while a sound or event plays to prevent textBox from writing before the event/sound ends. 
     private int runDisplay=0; // current displayRoutine to display
     private bool Ch1VisualsLoaded = false;
     private bool menuOpen = false;
@@ -83,6 +82,7 @@ public class Controller : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+
         //Menu Controls
         if (gameMode == 1 && Input.GetKeyDown("escape") && menuclicks.getCompOpen() == true)
         {
@@ -127,30 +127,33 @@ public class Controller : MonoBehaviour {
             GameObject.Find("2Decision").GetComponent<RectTransform>().localPosition = new Vector2(1000f, 0f);
         }
 
-        //Display Chapters
-        if (Input.GetKeyDown("space") && runDisplay == 0 && novel.getCurrentLine() == 0)
-        {
-            StartCoroutine(DisplayCh0());
-        }
-        else if ((Input.GetKeyDown("space")||(skip.autoOn==true&& skip.skipOn == false) ||(skip.skipOn==true&&skip.autoOn==false)) 
-            && runDisplay==0 && novel.getCurrentLine()>=8)
-        {
-            StartCoroutine(DisplayCh1());
-        }
+    }
 
-        if (gameMode == 0 && novel.getCurrentLine() == 18 && novel.savedIndex == 1)
-        {
-            StartCoroutine(DisplayCh1_1());
-        }
+
+    public void startCh0()
+    {
+        StartCoroutine(DisplayCh0());
+    }
+    public void startCh1_1()
+    {
+        StartCoroutine(DisplayCh1_1());
+    }
+    public void startCh1()
+    {
+        StartCoroutine(DisplayCh1());
     }
 
     //Chapter 1
     IEnumerator DisplayCh1()
     {
         runDisplay = 1;
-        if (novel.getCurrentLine() == 8 && Ch1VisualsLoaded == false)
+        if (novel.getCurrentLine() == 8)
         {
-            enableWrite = false;
+            charAppear(2);
+        }
+
+        if (novel.getCurrentLine() == 7 && Ch1VisualsLoaded == false)
+        {
             Ch1VisualsLoaded = true;
             // Change Namebox
             GameObject.Find("T8").GetComponent<Text>().text = "Sabrina";
@@ -164,34 +167,9 @@ public class Controller : MonoBehaviour {
             }
             currentBG = 2;
             CharOn = 1;
-            enableWrite = true;
         }
 
-        //Event pauses & sounds
-        if (novel.getCurrentLine() == 19 || novel.getCurrentLine() == 20)
-        {
-            GameObject.Find("SFX2").GetComponent<AudioSource>().Play();
-            yield return new WaitForSeconds(2f);
-            eventWait = true;
-        }
-
-
-        //change color for thought-text
-        if (novel.getCurrentLine() == 9 || novel.getCurrentLine() == 12 || novel.getCurrentLine() == 14 || 
-            novel.getCurrentLine() == 24 || novel.getCurrentLine() == 29 || novel.getCurrentLine() > 35 && novel.getCurrentLine() < 45)
-        {
-            GameObject.Find("Textbox").GetComponent<Text>().color = new Color(0f, 0.8f, 0.8f);
-        } else
-        {
-            GameObject.Find("Textbox").GetComponent<Text>().color = new Color(1f, 1f, 1f);
-        }
-
-        if (novel.getCurrentLine() == 9)
-        {
-            charAppear(2);
-        }
-
-        if (novel.getCurrentLine() == 17 && GameObject.Find("iO(Inst)1") == null && gameMode == 0)
+        if (novel.getCurrentLine() == 16 && GameObject.Find("iO(Inst)1") == null && gameMode == 0)
         {
             //enable inspection mode
             gameMode = 1;
@@ -225,7 +203,8 @@ public class Controller : MonoBehaviour {
 
     IEnumerator DisplayCh1_1()
     {
-        while (novel.getCurrentLine() == 18 && GameObject.Find("NameBox").GetComponent<CanvasRenderer>().GetAlpha() != 1f)
+        Debug.Log("Ch1.1 on");
+        while (GameObject.Find("NameBox").GetComponent<CanvasRenderer>().GetAlpha() != 1f)
         {
             textboxAppear();
             yield return new WaitForSeconds(0.08f);
@@ -237,9 +216,9 @@ public class Controller : MonoBehaviour {
     {
         runDisplay = 1;
         GameObject.Find("Title").GetComponent<CanvasRenderer>().SetAlpha(0f); //Title disappears
-        GameObject.Find("Title").GetComponent<RectTransform>().position = GameObject.Find("Title").GetComponent<RectTransform>().localPosition = new Vector3(0f, 200f, 0f);
+        GameObject.Find("Title").GetComponent<RectTransform>().position = GameObject.Find("Title").GetComponent<RectTransform>().localPosition = new Vector3(1000f, 0f, 0f);
 
-        if (novel.savedIndex == 1 && novel.getCurrentLine() == 0)
+        if (novel.savedIndex == 1 && novel.getCurrentLine() == -1)
         {
             // Jump to 2nd BG
             GameObject.Find("MainCam").GetComponent<Transform>().Translate(new Vector3(12f, 0f, 0f));

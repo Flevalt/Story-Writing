@@ -42,8 +42,7 @@ public class Novel : MonoBehaviour {
             Ch1[16] = "I don't like the look of this. And this room gives off an eerie vibe. I'd better check outside."; 
             Ch1[17] = ""; //=>Inspection Mode
 
-            Ch1[18] = "Nnnngh..."; //=>Story Mode
-            //door sound
+            Ch1[18] = "Nnnngh..."; //=>Story Mode //door sound
             Ch1[19] = "What the heck? It won't open.";
             //Pound against door sound
             Ch1[20] = "Help! The door is stuck!";
@@ -61,10 +60,10 @@ public class Novel : MonoBehaviour {
             // Doorhandle-rattle
             Ch1[30] = "!";
             Ch1[31] = "S-Someone finally came.";
-            Ch1[32] = "Hey! I'm stuck in here, can you please call someone to open..."; //???
-            Ch1[33] = "LET ME IN!";// Doorhandle-rattle // Sabrina
-            Ch1[34] = "Huh?";// Doorhandle-rattle // ???
-            Ch1[35] = "OPEN! OPEN THE DOOR GODDAMNIT!";// Doorhandle-rattle
+            Ch1[32] = "Hey! I'm stuck in here, can you please call someone to open..."; //Sabrina
+            Ch1[33] = "LET ME IN!";// Doorhandle-rattle // ???
+            Ch1[34] = "Huh?";// Doorhandle-rattle // Sabrina
+            Ch1[35] = "OPEN! OPEN THE DOOR GODDAMNIT!";// ??? //Doorhandle-rattle
             Ch1[36] = "As the man on the other side of the door screamed his lungs out, a feeling of uneasiness overcame me."; // Doorhandle-rattle // Sabrina
             Ch1[37] = "I wasn't sure where it came from or since when it started to appear, but a dense fog was now filling the room."; // Doorhandle-rattle
             Ch1[38] = "After that sound, the door rattling stopped."; //

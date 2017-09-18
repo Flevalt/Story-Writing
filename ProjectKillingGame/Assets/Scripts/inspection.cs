@@ -97,7 +97,7 @@ public class inspection : MonoBehaviour {
         Button btn = iO.AddComponent<Button>();
         btn.navigation = noneNav;
         btn.onClick.AddListener(() => {
-            lastClicked = objectId;
+        lastClicked = objectId;
 
             GameObject.Find("InspectionElements").GetComponent<RectTransform>().localPosition = new Vector2(1000f, 0f);
 
@@ -106,6 +106,7 @@ public class inspection : MonoBehaviour {
             controller.enableWrite = true;
             novel.setCurrentLine(18);
             GameObject.Find("Textbox").GetComponent<Text>().text = novel.getCurrentCh(novel.savedIndex)[novel.getCurrentLine()];
+            controller.startCh1_1();
         });
 
         iO.AddComponent<PolygonCollider2D>();
@@ -113,7 +114,7 @@ public class inspection : MonoBehaviour {
         iO.AddComponent<MouseHover>();
     }
 
-    //Create Decision inspection element
+    //Create inspection element for Decision
     public void instObject(int objectId, float xPos, float yPos, float width, float height, int itemObjectID, int itemID, int decisionId)
     {
         GameObject iOO = new GameObject(objectId.ToString());
@@ -138,7 +139,7 @@ public class inspection : MonoBehaviour {
         iO.AddComponent<MouseHover>();
     }
 
-    //instantiate inspection element that finds item
+    //Create inspection element that finds item
     // @objectID = inspection object; 
     // @itemObjectID = inspection object that drops items;
     // @itemID = the item that drops;
