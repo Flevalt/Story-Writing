@@ -73,7 +73,7 @@ public class Novel : MonoBehaviour {
             Ch1[41] = "I could try to puzzle the pieces together how I wanted, the outcome would still be the same to me."; //
             Ch1[42] = "I'm not even sure why I'm so convinced. But that man is undoubtedly dead. I was certain."; //
             Ch1[43] = "I tried to think about what could've happened outside that door and where this place is. The fear of a thought was trying to overtake my mind."; //
-            Ch1[44] = "You're next."; //
+            Ch1[44] = "\"You are next.\""; //
             Ch1[45] = "I was starting to believe that maybe I was overthinking. I tried to calm down."; //
             Ch1[46] = "But from there, things just started to get worse."; //
 
@@ -115,23 +115,6 @@ public class Novel : MonoBehaviour {
             Ch1[82] = "There's nothing left in the sink.";
             Ch1[83] = "The screen won't turn on.";
             Ch1[84] = "There's nothing left in the shaft.";
-
-
-            Ch1[50] = "...";
-            Ch1[51] = "The heck?";
-            Ch1[52] = "And they even forgot to put the weapon in the room. What kind of half-assed project is this ? World saving my ass.";
-            Ch1[53] = "At least the door is open now. I'm getting out of here."; //=>Inspection Mode
-            Ch1[54] = "its a sink.";
-            Ch1[55] = "its a toillet.";
-            Ch1[56] = "its a bed.";
-            Ch1[57] = "its a shaft.";
-            Ch1[58] = "its a door.";
-            Ch1[59] = "its a screen.";
-            Ch1[60] = "its a lights.";
-            Ch1[61] = "its a chair.";
-            Ch1[62] = "There's nothing left in the sink.";
-            Ch1[63] = "The screen won't turn on.";
-            Ch1[64] = "There's nothing left in the shaft.";
 
             return Ch1;
         }

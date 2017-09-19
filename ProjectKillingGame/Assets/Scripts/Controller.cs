@@ -19,6 +19,7 @@ public class Controller : MonoBehaviour {
     private int Char1;
     private int Char2;
     private int CharOn; // For loading function. 0 = 1on,2off, 1 = 1off,2on, 2 = 1on, 2on, 3 = 1off, 2off
+    //Also used for charDisplay calls in TextBox
     Vector3 moveCam;
     Color erase = new Color(0f,0f,0f,1f); //color to erase alpha
     private int runDisplay=0; // current displayRoutine to display
@@ -158,7 +159,7 @@ public class Controller : MonoBehaviour {
             // Change Namebox
             GameObject.Find("T8").GetComponent<Text>().text = "Sabrina";
             // Jump to 2nd BG
-            GameObject.Find("MainCam").GetComponent<Transform>().Translate(new Vector3(-24f, 0f, 0f));
+            GameObject.Find("MainCam").GetComponent<Transform>().localPosition = new Vector3(-24f, 0f, -10f);
             //BG slowly appears
             while (GameObject.Find("BG2").GetComponent<SpriteRenderer>().color.a != 1f)
             {
@@ -193,11 +194,6 @@ public class Controller : MonoBehaviour {
             });
         }
 
-        if (novel.getCurrentLine() == 74)
-        {
-            textboxDisappear();
-        }
-
         runDisplay = 0;
     }
 
@@ -221,7 +217,7 @@ public class Controller : MonoBehaviour {
         if (novel.savedIndex == 1 && novel.getCurrentLine() == -1)
         {
             // Jump to 2nd BG
-            GameObject.Find("MainCam").GetComponent<Transform>().Translate(new Vector3(12f, 0f, 0f));
+            GameObject.Find("MainCam").GetComponent<Transform>().localPosition = new Vector3(0f, 0f, -10f);
             //BG slowly appears
             while (GameObject.Find("BG1").GetComponent<SpriteRenderer>().color.a != 1f)
             {
@@ -314,18 +310,22 @@ public class Controller : MonoBehaviour {
             case 0:
                 charAppear(1);
                 charDisappear(2);
+                CharOn = 0;
                 break;
             case 1:
                 charDisappear(1);
                 charAppear(2);
+                CharOn = 1;
                 break;
             case 2:
                 charAppear(1);
                 charAppear(2);
+                CharOn = 2;
                 break;
             case 3:
                 charDisappear(1);
                 charDisappear(2);
+                CharOn = 3;
                 break;
         }
     }
@@ -345,6 +345,33 @@ public class Controller : MonoBehaviour {
 
         yushInst.GetComponent<Button>().onClick.AddListener(() => { LoadMenu.loadData(selectedSave); Destroy(questInst); });
         nopeInst.GetComponent<Button>().onClick.AddListener(() => { Destroy(questInst); });
+    }
+
+    public void changeBG(int i)
+    {
+        switch (i)
+        {
+            case 1: // Sabrina's Room
+                GameObject.Find("MainCam").GetComponent<Transform>().localPosition = new Vector3(0f, 0f, -10f);
+                currentBG = 1;
+                break;
+            case 2: // Prologue Ch1
+                GameObject.Find("MainCam").GetComponent<Transform>().localPosition = new Vector3(-24f, 0f, -10f);
+                currentBG = 2;
+                break;
+            case 3: // DirectorAppear 1
+                GameObject.Find("MainCam").GetComponent<Transform>().localPosition = new Vector3(-36f, 0f, -10f);
+                currentBG = 3;
+                break;
+            case 4: // DirectorAppear 2
+                GameObject.Find("MainCam").GetComponent<Transform>().localPosition = new Vector3(-48f, 0f, -10f);
+                currentBG = 4;
+                break;
+            case 5: // DirectorAppear 3
+                GameObject.Find("MainCam").GetComponent<Transform>().localPosition = new Vector3(-60f, 0f, -10f);
+                currentBG = 5;
+                break;
+        }
     }
 
     void charAppear(int i)

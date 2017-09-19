@@ -50,6 +50,7 @@ public class TitleWrite : MonoBehaviour {
         GameObject.Find("Title").GetComponent<RectTransform>().localPosition = new Vector3(1000f, 0f, 0f);
     }
 
+
     //displays titles that are not the beginning
     IEnumerator displaySmallTitles()
     {
