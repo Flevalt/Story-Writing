@@ -13,9 +13,9 @@ TagManager:
   - UI
   - 
   - 
-  - Textboxname
-  - Textbox
-  - 
+  - Camera1
+  - Camera2
+  - Camera3
   - 
   - 
   - 
@@ -41,21 +41,21 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: UI-top
+  - name: BG-bot
     uniqueID: 2720568837
     locked: 0
-  - name: UI-bot
+  - name: BG-top
     uniqueID: 3171578985
     locked: 0
-  - name: Char-top
+  - name: Char-bot
     uniqueID: 4156479973
     locked: 0
-  - name: Char-bot
+  - name: Char-top
     uniqueID: 2051889433
     locked: 0
-  - name: BG-top
+  - name: UI-bot
     uniqueID: 1935984335
     locked: 0
-  - name: BG-bot
+  - name: UI-top
     uniqueID: 4249449239
     locked: 0

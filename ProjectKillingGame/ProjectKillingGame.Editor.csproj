@@ -132,6 +132,8 @@
   <ItemGroup>
     <None Include="Assets\Materials\Bloom\Shader\Bloom.cginc" />
     <None Include="Assets\Materials\Bloom\Shader\Bloom.shader" />
+    <None Include="Assets\Materials\Substract2.shader" />
+    <None Include="Assets\Materials\Transparency.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

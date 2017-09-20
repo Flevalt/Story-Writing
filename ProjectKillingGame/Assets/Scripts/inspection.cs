@@ -96,20 +96,26 @@ public class inspection : MonoBehaviour {
         noneNav.mode = Navigation.Mode.None;
         Button btn = iO.AddComponent<Button>();
         btn.navigation = noneNav;
-        btn.onClick.AddListener(() => {
-        lastClicked = objectId;
+        switch (objectId) //add different listener for each storyobject
+        {
+            case 5:
+                btn.onClick.AddListener(() => {
+                    lastClicked = objectId;
 
-            GameObject.Find("InspectionElements").GetComponent<RectTransform>().localPosition = new Vector2(1000f, 0f);
+                    GameObject.Find("InspectionElements").GetComponent<RectTransform>().localPosition = new Vector2(1000f, 0f);
 
-            controller.gameMode = 0;
-            controller.charDisplay(1);
-            controller.enableWrite = true;
-            novel.setCurrentLine(18);
-            GameObject.Find("Textbox").GetComponent<Text>().text = novel.getCurrentCh(novel.savedIndex)[novel.getCurrentLine()];
-            controller.startCh1_1();
-            GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0f);
-            textbox.playSFX();
-        });
+                    controller.gameMode = 0;
+                    controller.charDisplay(1);
+                    controller.enableWrite = true;
+                    novel.setCurrentLine(18);
+                    GameObject.Find("Textbox").GetComponent<Text>().text = novel.getCurrentCh(novel.savedIndex)[novel.getCurrentLine()];
+                    controller.startCh1_1();
+                    GameObject.Find("NextPage").GetComponent<CanvasRenderer>().SetAlpha(0f);
+                    textbox.playSFX();
+                });
+                break;
+        }
+
 
         iO.AddComponent<PolygonCollider2D>();
         iO.AddComponent<MouseAnim>();
@@ -259,19 +265,29 @@ public class inspection : MonoBehaviour {
     }
 
     //change listener if the inspection element had more than just text
-    public void changeListener(int objectId)
+    public void changeListener(int objectId, int param)
     {
         GameObject.Find("iO(Inst)" + objectId).GetComponent<Button>().onClick.RemoveAllListeners();
-        switch (objectId)
+        switch (param)
         {
-            case 1:
+            case 1: // change sink text
                 GameObject.Find("iO(Inst)" + objectId).GetComponent<Button>().onClick.AddListener(() => {
                     lastClicked = objectId; //for changing listener of lastClicked during Textbox
                     inspectionType = 0;
                     displayText(9);
                 });
                 break;
-            case 6:
+            case 2: // change door(id=5) to move into Round1, Phase1 Hall.
+                GameObject.Find("iO(Inst)" + objectId).GetComponent<Button>().onClick.AddListener(() => {
+                    GameObject.Find("InspectionElements").GetComponent<RectTransform>().localPosition = new Vector2(2000f, 0f);
+                    lastClicked = objectId; //for changing listener of lastClicked during Textbox
+                inspectionType = 3;
+                GameObject.Find("SFX7").GetComponent<AudioSource>().Play();
+                    GameObject.Find("MainCam").GetComponent<Transform>().localPosition = new Vector3(0f, -10f, -10f);
+                    controller.gameMode = 2;
+                });
+                break;
+            case 6: //change screen text
                 GameObject.Find("iO(Inst)" + objectId).GetComponent<Button>().onClick.AddListener(() => {
                 lastClicked = objectId; //for changing listener of lastClicked during Textbox
                 inspectionType = 0;
@@ -280,7 +296,7 @@ public class inspection : MonoBehaviour {
                 break;
             case 3:
                 break;
-            case 4:
+            case 4: //change shaft text
                 GameObject.Find("iO(Inst)" + objectId).GetComponent<Button>().onClick.AddListener(() => {
                     lastClicked = objectId; //for changing listener of lastClicked during Textbox
                     inspectionType = 0;

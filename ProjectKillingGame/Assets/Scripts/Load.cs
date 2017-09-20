@@ -305,7 +305,7 @@ public class Load : MonoBehaviour {
             {
                 if (PlayerPrefs.GetInt("itemFound" + j) == 1)
                 {
-                    inspect.changeListener(j);
+                    inspect.changeListener(j, j);
                 }
             }
     }

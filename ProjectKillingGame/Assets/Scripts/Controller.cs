@@ -13,7 +13,7 @@ public class Controller : MonoBehaviour {
     public inspection inspection;
     public Quit quit;
     public int currentBG = 0;
-    public int gameMode = 0; //0 = reading, 1 = inspection, 2 = RPG (checks in the TextWrite script if to write or not)
+    public int gameMode = 0; //0 = reading, 1 = inspection, 2 = Phase1, 3 = RPG/Hellgate, 4 = Phase2 (checks in the TextWrite script if to write or not)
     public bool enableWrite = true; // (checks in the TextBox script if to write or not. Only true during main storyline-text)
     private TextBox textbox;
     private int Char1;
@@ -128,6 +128,11 @@ public class Controller : MonoBehaviour {
             GameObject.Find("2Decision").GetComponent<RectTransform>().localPosition = new Vector2(1000f, 0f);
         }
 
+        if(gameMode == 2)
+        {
+            phase1Start();
+        }
+
     }
 
 
@@ -195,6 +200,16 @@ public class Controller : MonoBehaviour {
         }
 
         runDisplay = 0;
+    }
+
+    public void loadSabrinaRoom()
+    {
+        changeBG(2);
+        charDisplay(3);
+        gameMode = 1;
+        stopWriting();
+        textboxDisappear();
+        GameObject.Find("InspectionElements").GetComponent<RectTransform>().localPosition = new Vector2(0f, 0f);
     }
 
     IEnumerator DisplayCh1_1()
@@ -371,6 +386,30 @@ public class Controller : MonoBehaviour {
                 GameObject.Find("MainCam").GetComponent<Transform>().localPosition = new Vector3(-60f, 0f, -10f);
                 currentBG = 5;
                 break;
+        }
+    }
+
+    public void phase1Start()
+    {
+        if (Input.GetKey("w"))
+        {
+            GameObject.Find("ChibiSabrina").GetComponent<Transform>().localPosition += new Vector3(0f, 0.01f, 0f);
+            GameObject.Find("Light1").GetComponent<Transform>().localPosition += new Vector3(0f, 0.01f, 0f);
+        }
+        else if (Input.GetKey("a"))
+        {
+            GameObject.Find("ChibiSabrina").GetComponent<Transform>().localPosition -= new Vector3(0.01f, 0f, 0f);
+            GameObject.Find("Light1").GetComponent<Transform>().localPosition -= new Vector3(0.01f, 0f, 0f);
+        }
+        else if (Input.GetKey("s"))
+        {
+            GameObject.Find("ChibiSabrina").GetComponent<Transform>().localPosition -= new Vector3(0f, 0.01f, 0f);
+            GameObject.Find("Light1").GetComponent<Transform>().localPosition -= new Vector3(0f, 0.01f, 0f);
+        }
+        else if (Input.GetKey("d"))
+        {
+            GameObject.Find("ChibiSabrina").GetComponent<Transform>().localPosition += new Vector3(0.01f, 0f, 0f);
+            GameObject.Find("Light1").GetComponent<Transform>().localPosition += new Vector3(0.01f, 0f, 0f);
         }
     }
 

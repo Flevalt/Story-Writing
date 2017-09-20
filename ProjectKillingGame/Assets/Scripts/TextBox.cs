@@ -273,7 +273,8 @@ public class TextBox : MonoBehaviour {
                 GameObject.Find("YouFound").GetComponent<RectTransform>().localPosition = new Vector2(0f, 0f);
                 StartCoroutine(itemObtainedAppear(inspect.itemId));
 
-                inspect.changeListener(inspect.lastClicked);
+                inspect.changeListener(inspect.lastClicked, inspect.lastClicked); 
+                //TODO: perhaps change 2nd param to int by creating ints for each change in inspection for each object
 
             }
             // Coins Found
@@ -292,7 +293,7 @@ public class TextBox : MonoBehaviour {
                 GameObject.Find("CoinsObtained").GetComponent<RectTransform>().localPosition = new Vector2(200f, 150f);
                 StartCoroutine(coinObtainedAppear(inspect.getCoinAmount()));
 
-                inspect.changeListener(inspect.lastClicked);
+                inspect.changeListener(inspect.lastClicked, inspect.lastClicked);
             }
             // Decision Time
             else if (Input.GetKeyDown("space") && inspect.inspectionType == 3)
@@ -402,9 +403,12 @@ public class TextBox : MonoBehaviour {
                 break;
             case 5:
                 //Director disappears
-                controller.charDisplay(1);
-                controller.changeBG(2);
+                Destroy(GameObject.Find("textwriter(Inst)" + txtWriterNr));
+                GetComponent<TextBox>().txtWriterNr = 1;
+                GameObject.Find("Textbox").GetComponent<Text>().text = "";
                 GameObject.Find("SFX1").GetComponent<AudioSource>().Play();
+                controller.loadSabrinaRoom();
+                inspect.changeListener(5, 2);
                 break;
         }
         eventWait = false;
@@ -454,7 +458,7 @@ public class TextBox : MonoBehaviour {
                 GameObject.Find("Pick1").GetComponent<Button>().onClick.AddListener(() => {
                     // Change listener
                     inspect.itemFound3 = 1;
-                    inspect.changeListener(inspect.lastClicked);
+                    inspect.changeListener(inspect.lastClicked, inspect.lastClicked);
 
                     //Decision window disappear
                     GameObject.Find("2Decision").GetComponent<CanvasRenderer>().SetAlpha(0f);
