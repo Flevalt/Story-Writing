@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/**
+* Manages the Logic for inspecting Items on the screen during Inspection Mode.
+*/
+
 public class inspection : MonoBehaviour {
 
     public Sprite img;
-    private Controller controller;
     public Items items;
-    private Novel novel;
-    private TextBox textbox;
+    public Novel novel;
+    public Controller controller;
+    public TextBox textbox;
     private TextWrite tw;
     private Navigation noneNav = new Navigation();
     public int inspectionType; //0 = text, 1 = itemFound, 2 = coinsFound, 3 = decision.
@@ -51,31 +55,19 @@ public class inspection : MonoBehaviour {
     public int itemFound31;
     public int itemFound32;
 
+    public UIManager UIManager;
+
     private void Start()
     {
-        //Hide Decision Menu
-        GameObject.Find("2Decision").GetComponent<CanvasRenderer>().SetAlpha(0f);
-        GameObject.Find("Pick1").GetComponent<CanvasRenderer>().SetAlpha(0f);
-        GameObject.Find("Pick2").GetComponent<CanvasRenderer>().SetAlpha(0f);
-        GameObject.Find("2DecisionTextPanel").GetComponent<CanvasRenderer>().SetAlpha(0f);
-        GameObject.Find("choice1").GetComponent<CanvasRenderer>().SetAlpha(0f);
-        GameObject.Find("choice2").GetComponent<CanvasRenderer>().SetAlpha(0f);
-        GameObject.Find("2DecisionText").GetComponent<CanvasRenderer>().SetAlpha(0f);
-
-        //hide ItemObtained Menu 
-        GameObject.Find("YouFound").GetComponent<CanvasRenderer>().SetAlpha(0f);
-        GameObject.Find("ItemObtained").GetComponent<CanvasRenderer>().SetAlpha(0f);
-        GameObject.Find("ItemBG").GetComponent<CanvasRenderer>().SetAlpha(0f);
-        GameObject.Find("FoundItem").GetComponent<CanvasRenderer>().SetAlpha(0f);
-        GameObject.Find("YouFoundText").GetComponent<CanvasRenderer>().SetAlpha(0f);
-        GameObject.Find("ObtainedText").GetComponent<CanvasRenderer>().SetAlpha(0f);
-
-        textbox = GameObject.Find("Textbox").GetComponent<TextBox>();
-        controller = GameObject.Find("Controller").GetComponent<Controller>();
-        novel = GameObject.Find("NovelStorage").GetComponent<Novel>();
+        //Hide Decision & ItemObtained Windows
+        UIManager.closeDecisionWindow();
+        UIManager.closeItemObtainedWindow();
 
         GameObject.Find("InspectionElements").GetComponent<RectTransform>().localPosition = new Vector2(1000f, 0f);
     }
+
+
+
 
     //Create inspection element that switches to Story Mode
     public void instStoryObject(int objectId, float xPos, float yPos, float width, float height)
@@ -105,7 +97,7 @@ public class inspection : MonoBehaviour {
                     GameObject.Find("InspectionElements").GetComponent<RectTransform>().localPosition = new Vector2(1000f, 0f);
 
                     controller.gameMode = 0;
-                    controller.charDisplay(1);
+                    UIManager.charDisplay(1);
                     controller.enableWrite = true;
                     novel.setCurrentLine(18);
                     GameObject.Find("Textbox").GetComponent<Text>().text = novel.getCurrentCh(novel.savedIndex)[novel.getCurrentLine()];
@@ -118,7 +110,7 @@ public class inspection : MonoBehaviour {
 
 
         iO.AddComponent<PolygonCollider2D>();
-        iO.AddComponent<MouseAnim>();
+        iO.AddComponent<MouseAnimator>();
         iO.AddComponent<MouseHover>();
     }
 
@@ -126,13 +118,14 @@ public class inspection : MonoBehaviour {
     public void instObject(int objectId, float xPos, float yPos, float width, float height, int itemObjectID, int itemID, int decisionId)
     {
         GameObject iOO = new GameObject(objectId.ToString());
+        
         GameObject iO = Instantiate(iOO);
         iO.name = "iO(Inst)" + objectId;
         Destroy(iOO);
 
         Image im = iO.AddComponent<Image>();
         im.sprite = img;
-
+        
         iO.transform.SetParent(GameObject.Find("InspectionElements").transform, false);
 
         iO.GetComponent<RectTransform>().localPosition = new Vector2(xPos, yPos);
@@ -143,7 +136,7 @@ public class inspection : MonoBehaviour {
         addbuttonDecisionListener(btn, itemObjectID, objectId, itemID, decisionId);
 
         iO.AddComponent<PolygonCollider2D>();
-        iO.AddComponent<MouseAnim>();
+        iO.AddComponent<MouseAnimator>();
         iO.AddComponent<MouseHover>();
     }
 
@@ -171,7 +164,7 @@ public class inspection : MonoBehaviour {
         addbuttonListener(btn, itemObjectID, objectId, itemID);
 
         iO.AddComponent<PolygonCollider2D>();
-        iO.AddComponent<MouseAnim>();
+        iO.AddComponent<MouseAnimator>();
         iO.AddComponent<MouseHover>();
     }
 
@@ -260,7 +253,7 @@ public class inspection : MonoBehaviour {
         });
 
         iO.AddComponent<PolygonCollider2D>();
-        iO.AddComponent<MouseAnim>();
+        iO.AddComponent<MouseAnimator>();
         iO.AddComponent<MouseHover>();
     }
 
@@ -313,12 +306,11 @@ public class inspection : MonoBehaviour {
     public void displayText(int id)
     {
         GameObject.Find("InspectionElements").GetComponent<RectTransform>().localPosition = new Vector2(1000f, 0f);
-        GameObject.Find("Mouse1").GetComponent<MouseAnim>().changeMouse(1);
+        GameObject.Find("Mouse1").GetComponent<MouseAnimator>().changeMouse(1);
 
         GameObject.Find("UI_Panel").GetComponent<CanvasRenderer>().SetAlpha(1f);
-        GameObject.Find("NameBox").GetComponent<CanvasRenderer>().SetAlpha(1f);
-        GameObject.Find("T8").GetComponent<CanvasRenderer>().SetAlpha(1f);
-        controller.charDisplay(1);
+        UIManager.showNameBox();
+        UIManager.charDisplay(1);
         switch (id)
         {
             case 1:
