@@ -1,105 +1,94 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/**
+ * Switches between the different chapters & game modes.
+ * Also serves as model that holds the game's state.
+ */
 public class Controller : MonoBehaviour {
 
-    public TextBox textbox; // UNUSED
-
+    /**
+     * Public Manager Objects
+     */
+    public GameObject nameboxText;
+    public TextBox textbox;
+    public UIManager UIManager;
     public Load LoadMenu;
-    public Skip skip;
     public Novel novel;
     public inspection inspection;
-    public int currentBG = 0;
-    public int gameMode = 0; //0 = reading, 1 = inspection, 2 = Phase1, 3 = RPG/Hellgate, 4 = Phase2 (checks in the TextWrite script if to write or not)
+    public TitleWrite titlewrite;
+
+    /**
+     * GAME STATES
+     */
+    public int currentBG = 0; // exclusively used for Save/Load functionality
+    public string gameMode = ""; //reading, inspection, CorridorWalk, RPG/Hellgate, ?? (checks in the TextWrite script if to write or not)
     public bool enableWrite = true; // (checks in the TextBox script if to write or not. Only true during main storyline-text)
-    private int Char1;
-    private int Char2;
-    Vector3 moveCam;
-    Color erase = new Color (0f, 0f, 0f, 1f); //color to erase alpha
     private int runDisplay = 0; // current displayRoutine to display
     private bool Ch1VisualsLoaded = false;
+    public int coinAmount; //obtained coin amount
+    public int decision; //decision id for decision
 
-    public Sprite yes;
-    public Sprite no;
-    public Sprite confirmBG;
-    GameObject InstanceContainer;
-    GameObject question;
-    GameObject yush;
-    GameObject nope;
-    private int selectedSave = 1;
-
-    public UIManager UIManager;
-
+    /**
+     * SAVE/LOAD Variables
+     */
+    public int selectedSave = 1;
+    private int Char1;
+    private int Char2;
     public int CharOn; //State of the TextBox's Char Slots
     // For loading function. 0 = 1on,2off, 1 = 1off,2on, 2 = 1on, 2on, 3 = 1off, 2off
     //Also used for charDisplay calls in TextBox
 
-    private void Awake () {
-        // Prepare confirmWindow instantiator
-        InstanceContainer = new GameObject ("InstanceContainer");
-        question = new GameObject ("Confirm");
-        yush = new GameObject ("Yes");
-        nope = new GameObject ("No");
-        question.transform.SetParent (InstanceContainer.transform, false);
-        yush.transform.SetParent (InstanceContainer.transform, false);
-        nope.transform.SetParent (InstanceContainer.transform, false);
-        Image questionImg = question.AddComponent<Image> ();
-        Image yushImg = yush.AddComponent<Image> ();
-        Image nopeImg = nope.AddComponent<Image> ();
-        questionImg.sprite = confirmBG;
-        yushImg.sprite = yes;
-        nopeImg.sprite = no;
-        questionImg.rectTransform.sizeDelta = new Vector2 (400f, 250f);
-        yushImg.rectTransform.sizeDelta = new Vector2 (100f, 60f);
-        nopeImg.rectTransform.sizeDelta = new Vector2 (100f, 60f);
-        Button btnYes = yush.AddComponent<Button> ();
-        Button btnNo = nope.AddComponent<Button> ();
-
-        GameObject.Find ("NextPage").GetComponent<Button> ().enabled = false;
-    }
-
     void Start () {
-
-        if (novel.getCurrentLine () != -1) { //While not at beginning of Chapter
-            GameObject.Find ("UI_Panel").GetComponent<CanvasRenderer> ().SetAlpha (1f);
-            UIManager.charAppear (1);
-            UIManager.charAppear (2);
-            CharOn = 2;
-        } else { //While at beginning of chapter
-            UIManager.charDisappear (1);
-            UIManager.charDisappear (2);
-            CharOn = 3;
-
-            GameObject.Find ("BG1").GetComponent<SpriteRenderer> ().color = GameObject.Find ("BG1").GetComponent<SpriteRenderer> ().color - erase; //BG Hidden
-            GameObject.Find ("BG2").GetComponent<SpriteRenderer> ().color = GameObject.Find ("BG2").GetComponent<SpriteRenderer> ().color - erase; //BG Hidden
-
-            UIManager.textboxDisappear ();
+        gameMode = "reading";
+        //Only load title if at beginning of a chapter
+        if (novel.getCurrentLine () == -1) {
+            titlewrite.fadeInTitle ("~ Prologue ~", Color.white, 0.025f);
         }
     }
 
-    // Update is called once per frame
     void Update () {
-
-        if (gameMode == 2) {
+        if (gameMode == "corridorWalk") {
             phase1Start ();
         }
-
     }
 
+    // Intro with planet
     public void startCh0 () {
-        StartCoroutine (DisplayCh0 ());
+        DisplayCh0 ();
     }
+    // Sabrina wakes up in her room.
+    public void startCh1 () {
+        DisplayCh1 ();
+    }
+    // Sabrina interacts with the door.
     public void startCh1_1 () {
         StartCoroutine (DisplayCh1_1 ());
     }
-    public void startCh1 () {
-        StartCoroutine (DisplayCh1 ());
+
+    void changeNameBoxText (string name) {
+        nameboxText.GetComponent<Text> ().text = name;
     }
 
-    //Chapter 1
-    IEnumerator DisplayCh1 () {
+    //Planet appears
+    void DisplayCh0 () {
+        runDisplay = 1;
+        //titlewrite disappears
+        titlewrite.hideTitle ();
+
+        //BG appears
+        if (novel.savedIndex == 1 && novel.getCurrentLine () == -1) {
+            UIManager.changeBG ("Prologue");
+            currentBG = 1;
+        }
+        UIManager.textboxAppear ();
+        runDisplay = 0;
+    }
+
+    void DisplayCh1 () {
         runDisplay = 1;
         if (novel.getCurrentLine () == 8) {
             UIManager.charAppear (2);
@@ -108,21 +97,17 @@ public class Controller : MonoBehaviour {
         if (novel.getCurrentLine () == 7 && Ch1VisualsLoaded == false) {
             Ch1VisualsLoaded = true;
             // Change Namebox
-            GameObject.Find ("NameBoxText").GetComponent<Text> ().text = "Sabrina";
+            changeNameBoxText ("Sabrina");
             // Jump to 2nd BG
-            GameObject.Find ("MainCam").GetComponent<Transform> ().localPosition = new Vector3 (-24f, 0f, -10f);
-            //BG slowly appears
-            while (GameObject.Find ("BG2").GetComponent<SpriteRenderer> ().color.a != 1f) {
-                GameObject.Find ("BG2").GetComponent<SpriteRenderer> ().color = GameObject.Find ("BG2").GetComponent<SpriteRenderer> ().color + new Color (0f, 0f, 0f, 0.2f);
-                yield return new WaitForSeconds (0.08f);
-            }
+            UIManager.changeBG ("SabrinasRoom");
+
             currentBG = 2;
             CharOn = 1;
         }
 
-        if (novel.getCurrentLine () == 16 && GameObject.Find ("iO(Inst)1") == null && gameMode == 0) {
+        if (novel.getCurrentLine () == 16 && GameObject.Find ("sink") == null && gameMode == "reading") {
             //enable inspection mode
-            gameMode = 1;
+            gameMode = "inspection";
             //disable writing visuals
             UIManager.charDisappear (2);
             stopWriting ();
@@ -132,14 +117,15 @@ public class Controller : MonoBehaviour {
             GameObject.Find ("TutorialPanel").GetComponent<RectTransform> ().Translate (new Vector2 (675f, 0f));
             GameObject.Find ("CloseTutorialPanel").GetComponent<Button> ().onClick.AddListener (() => {
                 GameObject.Find ("TutorialPanel").GetComponent<RectTransform> ().Translate (new Vector2 (-675f, 0f));
-                inspection.instObject (1, 300f, -50f, 80f, 70f, 1, 1); //sink
-                inspection.instObject (2, 300f, -200f, 80f, 70f); //toillet
-                inspection.instObject (3, -220f, -180f, 240f, 120f); //bed
-                inspection.instObject (4, -30f, 225f, 80f, 50f, 3, 2, 1); //ventilation shaft
-                inspection.instStoryObject (5, 220f, -30f, 120f, 320f); //door
-                inspection.instObject (6, 90f, 60f, 100f, 100f, 2, 0); //screen
-                inspection.instObject (7, 150f, 200f, 250f, 70f); //lights
-                inspection.instObject (8, -20f, -100f, 80f, 90f); //chair
+                inspection.instObject ("sink", 300f, -50f, 80f, 70f, 1, 1); //sink
+                inspection.instObject ("toilet", 300f, -200f, 80f, 70f); //toillet
+                inspection.instObject ("bed", -220f, -180f, 240f, 120f); //bed
+                inspection.instObject ("shaft", -30f, 225f, 80f, 50f, 3, 2, 1); //ventilation shaft
+                inspection.instStoryObject ("door", 220f, -30f, 120f, 320f); //door
+                inspection.instObject ("screen", 90f, 60f, 100f, 100f, 2, 0); //screen
+                inspection.instObject ("lights", 150f, 200f, 250f, 70f); //lights
+                inspection.instObject ("chair", -20f, -100f, 80f, 90f); //chair
+                inspection.disableNavForInspectionElems();
             });
         }
 
@@ -147,92 +133,25 @@ public class Controller : MonoBehaviour {
     }
 
     public void loadSabrinaRoom () {
-        changeBG (2);
-        UIManager.charDisplay (3);
-        gameMode = 1;
+        UIManager.changeBG ("SabrinasRoom");
+        UIManager.charDisplay ("none");
+        gameMode = "inspection";
         stopWriting ();
         UIManager.textboxDisappear ();
         GameObject.Find ("InspectionElements").GetComponent<RectTransform> ().localPosition = new Vector2 (0f, 0f);
     }
 
     IEnumerator DisplayCh1_1 () {
-        Debug.Log ("Ch1.1 on");
         while (GameObject.Find ("NameBox").GetComponent<CanvasRenderer> ().GetAlpha () != 1f) {
             UIManager.textboxAppear ();
             yield return new WaitForSeconds (0.08f);
         }
-        GameObject.Find ("NextPage").GetComponent<CanvasRenderer> ().SetAlpha (1f);
-    }
-
-    IEnumerator DisplayCh0 () {
-        runDisplay = 1;
-        GameObject.Find ("Title").GetComponent<CanvasRenderer> ().SetAlpha (0f); //Title disappears
-        GameObject.Find ("Title").GetComponent<RectTransform> ().position = GameObject.Find ("Title").GetComponent<RectTransform> ().localPosition = new Vector3 (1000f, 0f, 0f);
-
-        if (novel.savedIndex == 1 && novel.getCurrentLine () == -1) {
-            // Jump to 2nd BG
-            GameObject.Find ("MainCam").GetComponent<Transform> ().localPosition = new Vector3 (0f, 0f, -10f);
-            //BG slowly appears
-            while (GameObject.Find ("BG1").GetComponent<SpriteRenderer> ().color.a != 1f) {
-                GameObject.Find ("BG1").GetComponent<SpriteRenderer> ().color = GameObject.Find ("BG1").GetComponent<SpriteRenderer> ().color + new Color (0f, 0f, 0f, 0.2f);
-                yield return new WaitForSeconds (0.08f);
-            }
-            currentBG = 1;
-        }
-
-        while (novel.getCurrentLine () < 9 && GameObject.Find ("NameBoxText").GetComponent<CanvasRenderer> ().GetAlpha () != 1f) {
-            //UI appears
-            UIManager.textboxAppear ();
-            yield return new WaitForSeconds (0.08f);
-        }
-        runDisplay = 0;
     }
 
     public void stopWriting () {
         enableWrite = false;
         Destroy (GameObject.Find ("textwriter(Inst)" + textbox.txtWriterNr));
-        GameObject.Find ("Textbox").GetComponent<Text> ().text = "";
-    }
-
-    public void confirmationWindow () {
-        GameObject questInst = Instantiate (question);
-        GameObject yushInst = Instantiate (yush);
-        GameObject nopeInst = Instantiate (nope);
-        questInst.transform.SetParent (GameObject.Find ("Canvas").transform, false);
-        yushInst.transform.SetParent (questInst.transform, false);
-        nopeInst.transform.SetParent (questInst.transform, false);
-
-        questInst.GetComponent<Image> ().rectTransform.position = new Vector3 (350f, 250f, 0f);
-        yushInst.GetComponent<Image> ().rectTransform.localPosition = new Vector3 (-75f, 0f, 0f);
-        nopeInst.GetComponent<Image> ().rectTransform.localPosition = new Vector3 (75f, 0f, 0f);
-
-        yushInst.GetComponent<Button> ().onClick.AddListener (() => { LoadMenu.loadData (selectedSave); Destroy (questInst); });
-        nopeInst.GetComponent<Button> ().onClick.AddListener (() => { Destroy (questInst); });
-    }
-
-    public void changeBG (int i) {
-        switch (i) {
-            case 1: // Sabrina's Room
-                GameObject.Find ("MainCam").GetComponent<Transform> ().localPosition = new Vector3 (0f, 0f, -10f);
-                currentBG = 1;
-                break;
-            case 2: // Prologue Ch1
-                GameObject.Find ("MainCam").GetComponent<Transform> ().localPosition = new Vector3 (-24f, 0f, -10f);
-                currentBG = 2;
-                break;
-            case 3: // DirectorAppear 1
-                GameObject.Find ("MainCam").GetComponent<Transform> ().localPosition = new Vector3 (-36f, 0f, -10f);
-                currentBG = 3;
-                break;
-            case 4: // DirectorAppear 2
-                GameObject.Find ("MainCam").GetComponent<Transform> ().localPosition = new Vector3 (-48f, 0f, -10f);
-                currentBG = 4;
-                break;
-            case 5: // DirectorAppear 3
-                GameObject.Find ("MainCam").GetComponent<Transform> ().localPosition = new Vector3 (-60f, 0f, -10f);
-                currentBG = 5;
-                break;
-        }
+        textbox.GetComponent<TextMeshProUGUI> ().text = "";
     }
 
     public void phase1Start () {
@@ -278,4 +197,5 @@ public class Controller : MonoBehaviour {
     public void setSelectedSave (int i) {
         selectedSave = i;
     }
+
 }

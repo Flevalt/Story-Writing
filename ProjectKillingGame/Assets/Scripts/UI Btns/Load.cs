@@ -173,7 +173,7 @@ public class Load : MonoBehaviour {
 
             if (listenerAdded[c - 1] == false) //prevent multiple addition of listeners upon save
             {
-                BtnInst.GetComponent<Button>().onClick.AddListener(() => { control.confirmationWindow(); control.setSelectedSave(BtnInst.GetComponent<SaveFile>().savefileindex); });
+                BtnInst.GetComponent<Button>().onClick.AddListener(() => { UIManager.confirmationWindow(); control.setSelectedSave(BtnInst.GetComponent<SaveFile>().savefileindex); });
                 listenerAdded[c - 1] = true;
             }
         });
@@ -182,7 +182,7 @@ public class Load : MonoBehaviour {
         {
             if (listenerAdded[c - 1] == false) //prevent multiple additions of the listener
             {
-                GameObject.Find("Savefile(inst)" + c).GetComponent<Button>().onClick.AddListener(() => { control.confirmationWindow(); control.setSelectedSave(BtnInst.GetComponent<SaveFile>().savefileindex); });
+                GameObject.Find("Savefile(inst)" + c).GetComponent<Button>().onClick.AddListener(() => { UIManager.confirmationWindow(); control.setSelectedSave(BtnInst.GetComponent<SaveFile>().savefileindex); });
                 listenerAdded[c - 1] = true;
             }
         }
@@ -261,10 +261,10 @@ public class Load : MonoBehaviour {
         //load BG (To be extended by more BGs)
         switch (PlayerPrefs.GetInt("currentBG" + index)){
             case 1:
-                GameObject.Find("MainCam").GetComponent<Transform>().position = new Vector3(0f, 0f, -10f);
+                UIManager.changeBG("SabrinasRoom");
                 break;
             case 2:
-                GameObject.Find("MainCam").GetComponent<Transform>().position = new Vector3(-24f, 0f, -10f);
+                UIManager.changeBG("directorAppear1");
                 break;
         }
 
@@ -272,7 +272,7 @@ public class Load : MonoBehaviour {
 
         UIManager.switchChar(1,"f001");
         UIManager.switchChar(2,"f003");
-        GameObject.Find("UIManager").GetComponent<UIManager>().charDisplay(PlayerPrefs.GetInt("CharOn" + index));
+        //UIManager.charDisplay(PlayerPrefs.GetInt("CharOn" + index));
 
         //load current Chapter
         GameObject.Find("NovelStorage").GetComponent<Novel>().savedIndex = PlayerPrefs.GetInt("currentIndex" + index);
@@ -293,20 +293,38 @@ public class Load : MonoBehaviour {
 
         //exchange inspect element listeners
         //TODO: Only load the objects during entering a room with such objects and NOT during loadData
-        inspect.instObject(1, 300f, -50f, 80f, 70f, 1, 1); //sink
-        inspect.instObject(2, 300f, -200f, 80f, 70f); //toillet
-        inspect.instObject(3, -220f, -180f, 240f, 120f); //bed
-        inspect.instObject(4, -30f, 225f, 80f, 50f); //ventilation shaft
-        inspect.instObject(5, 220f, -30f, 120f, 320f); //door
-        inspect.instObject(6, 90f, 60f, 100f, 100f, 1, 0); //screen
-        inspect.instObject(7, 150f, 200f, 250f, 70f); //lights
-        inspect.instObject(8, -20f, -100f, 80f, 90f); //chair
+        inspect.instObject("sink", 300f, -50f, 80f, 70f, 1, 1); //sink
+        inspect.instObject("toilet", 300f, -200f, 80f, 70f); //toillet
+        inspect.instObject("bed", -220f, -180f, 240f, 120f); //bed
+        inspect.instObject("shaft", -30f, 225f, 80f, 50f); //ventilation shaft
+        inspect.instObject("door", 220f, -30f, 120f, 320f); //door
+        inspect.instObject("screen", 90f, 60f, 100f, 100f, 1, 0); //screen
+        inspect.instObject("lights", 150f, 200f, 250f, 70f); //lights
+        inspect.instObject("chair", -20f, -100f, 80f, 90f); //chair
 
         for (int j = 1; j < savefiles.Length + 1; j++)
             {
                 if (PlayerPrefs.GetInt("itemFound" + j) == 1)
                 {
-                    inspect.changeListener(j, j);
+                    string name = "";
+                    if(j == 1) {
+                        name = "sink";
+                    } else if(j == 2) {
+                        name = "toilet";
+                    } else if(j == 3) {
+                        name = "bed";
+                    } else if(j == 4) {
+                        name = "shaft";
+                    } else if(j == 5) {
+                        name = "door";
+                    } else if(j == 6) {
+                        name = "screen";
+                    } else if(j == 7) {
+                        name = "lights";
+                    } else if(j == 8) {
+                        name = "chair";
+                    }
+                    inspect.changeListener(name);
                 }
             }
     }

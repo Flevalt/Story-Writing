@@ -3,15 +3,42 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/**
+ * Handles all UI Elements EXCEPT those of the title.
+ */
+
 public class UIManager : MonoBehaviour {
     public GameObject DecisionBox;
+    public GameObject Pick1, Pick2;
+
     public GameObject ItemObtainedBox;
-    public Controller Controller;
+    public Controller controller;
+    public Novel novel;
+    public Camera MainCam;
+    public GameObject Background;
+
+    public GameObject UIPanel;
+
+    Color erase = new Color (0f, 0f, 0f, 1f); //color to erase alpha
+
+    void Start () {
+        if (novel.getCurrentLine () != -1) { //While not at beginning of Chapter
+            UIPanel.GetComponent<CanvasRenderer> ().SetAlpha (1f);
+            charDisplay ("both");
+        } else { //While at beginning of chapter
+            charDisplay ("none");
+            changeBG ("Page1");
+            textboxDisappear ();
+        }
+    }
 
     void Update () {
-        //Menu Controls
-        if (Controller.gameMode == 1 && Input.GetKeyDown ("escape")) {
+        handleEscInput ();
+    }
 
+    //Escape Btn Input
+    void handleEscInput () {
+        if (controller.gameMode == "inspection" && Input.GetKeyDown ("escape")) {
             if (getCompOpen () == true) {
                 hideCompendium ();
             } else if (getSettingsOpen () == true) {
@@ -26,28 +53,71 @@ public class UIManager : MonoBehaviour {
                 hideGameMenu ();
             } else if (menuOpen == true && quit.getQuitting () == true) {
                 quit.setQuitting (false);
-
             }
-
         }
     }
 
-    // Decision Window
+    /**
+     * BACKGROUND IMAGE
+     */
+    public void changeBG (string imgName) {
+
+        if (imgName == ("Prologue")) {
+            Background.GetComponent<SpriteRenderer> ().sprite = Resources.Load<Sprite> ("BGs/Page1");
+            controller.currentBG = 1;
+        }
+        if (imgName == ("SabrinasRoom")) {
+            Background.GetComponent<SpriteRenderer> ().sprite = Resources.Load<Sprite> ("BGs/t3");
+            controller.currentBG = 2;
+        }
+        if (imgName == ("directorAppear1")) {
+            Background.GetComponent<SpriteRenderer> ().sprite = Resources.Load<Sprite> ("BGs/ton");
+            controller.currentBG = 2;
+        }
+        if (imgName == ("directorAppear2")) {
+            Background.GetComponent<SpriteRenderer> ().sprite = Resources.Load<Sprite> ("BGs/ton2");
+            controller.currentBG = 3;
+        }
+        if (imgName == ("directorAppear3")) { // not in use yet
+            Background.GetComponent<SpriteRenderer> ().sprite = Resources.Load<Sprite> ("BGs/ton3");
+            controller.currentBG = 4;
+        }
+        if (imgName == ("Black")) { //not in use yet
+            Background.GetComponent<SpriteRenderer> ().sprite = Resources.Load<Sprite> ("BGs/FadeInOut");
+            controller.currentBG = 5;
+        }
+    }
+    public void hideBackground () {
+        //Background.GetComponent<SpriteRenderer> ().color = Background.GetComponent<SpriteRenderer> ().color - erase;
+    }
+    public void showBackground () {
+        //Background.GetComponent<SpriteRenderer> ().color = Background.GetComponent<SpriteRenderer> ().color + erase;
+    }
+
+    /**
+     * DECISION WINDOW
+     */
+    public void confirmationWindow () {
+        openDecisionWindow ();
+        changeDecisionText ("Confirm Save?", "Yes", "No");
+        Pick1.GetComponent<Button> ().onClick.AddListener (() => { controller.LoadMenu.loadData (controller.selectedSave); closeDecisionWindow (); });
+        Pick2.GetComponent<Button> ().onClick.AddListener (() => { closeDecisionWindow (); });
+    }
     public void openDecisionWindow () {
         DecisionBox.SetActive (true);
-        GameObject.Find ("DecisionWindow").GetComponentInChildren<RectTransform> ().localPosition = new Vector2 (0f, 0f);
+        DecisionBox.GetComponentInChildren<RectTransform> ().localPosition = new Vector2 (0f, 0f);
     }
     public void closeDecisionWindow () {
-        GameObject.Find ("DecisionWindow").GetComponent<RectTransform> ().localPosition = new Vector2 (1000f, 0f);
+        DecisionBox.GetComponent<RectTransform> ().localPosition = new Vector2 (1000f, 0f);
         DecisionBox.SetActive (false);
     }
     /**
-    * Changes the text for the Decision Window.
-    */
-    public void changeDecisionText(string title, string choice1, string choice2) {
-        GameObject.Find ("2DecisionText").GetComponent<Text> ().text = "Leave the Game?";
-        GameObject.Find ("choice1").GetComponent<Text> ().text = "Return to Main Menu.";
-        GameObject.Find ("choice2").GetComponent<Text> ().text = "Return to Desktop.";
+     * Changes the text for the Decision Window.
+     */
+    public void changeDecisionText (string title, string choice1, string choice2) {
+        GameObject.Find ("2DecisionText").GetComponent<Text> ().text = title; //"Leave the Game?"
+        GameObject.Find ("choice1").GetComponent<Text> ().text = choice1; //"Return to Main Menu."
+        GameObject.Find ("choice2").GetComponent<Text> ().text = choice2; //"Return to Desktop."
     }
     // ItemObtained Window
     public void openItemObtainedWindow () {
@@ -57,104 +127,65 @@ public class UIManager : MonoBehaviour {
         ItemObtainedBox.SetActive (false);
     }
 
-    // TextBox's NameBox
-    public void showNameBox () {
-        GameObject.Find ("NameBox").GetComponent<CanvasRenderer> ().SetAlpha (1f);
-        GameObject.Find ("NameBoxText").GetComponent<CanvasRenderer> ().SetAlpha (1f);
-    }
-    public void hideNameBox () {
-        GameObject.Find ("NameBox").GetComponent<CanvasRenderer> ().SetAlpha (0f);
-        GameObject.Find ("NameBoxText").GetComponent<CanvasRenderer> ().SetAlpha (0f);
-    }
-
-    //TextBox
+    /**
+     * TEXTBOX
+     *   
+     * Textbox and all it's elements appear.
+     */
     public void textboxAppear () {
-        GameObject.Find ("UI_Panel").GetComponent<CanvasRenderer> ().SetAlpha (GameObject.Find ("UI_Panel").GetComponent<CanvasRenderer> ().GetAlpha () + 0.2f);
-        GameObject.Find ("NameBox").GetComponent<CanvasRenderer> ().SetAlpha (GameObject.Find ("NameBox").GetComponent<CanvasRenderer> ().GetAlpha () + 0.2f);
-        GameObject.Find ("Skip").GetComponent<CanvasRenderer> ().SetAlpha (GameObject.Find ("Skip").GetComponent<CanvasRenderer> ().GetAlpha () + 0.2f);
-        GameObject.Find ("Auto").GetComponent<CanvasRenderer> ().SetAlpha (GameObject.Find ("Auto").GetComponent<CanvasRenderer> ().GetAlpha () + 0.2f);
-        GameObject.Find ("SpeedUp").GetComponent<CanvasRenderer> ().SetAlpha (GameObject.Find ("SpeedUp").GetComponent<CanvasRenderer> ().GetAlpha () + 0.2f);
-        GameObject.Find ("SpeedDown").GetComponent<CanvasRenderer> ().SetAlpha (GameObject.Find ("SpeedDown").GetComponent<CanvasRenderer> ().GetAlpha () + 0.2f);
-        GameObject.Find ("Load").GetComponent<CanvasRenderer> ().SetAlpha (GameObject.Find ("Load").GetComponent<CanvasRenderer> ().GetAlpha () + 0.2f);
-        GameObject.Find ("Menu").GetComponent<CanvasRenderer> ().SetAlpha (GameObject.Find ("Menu").GetComponent<CanvasRenderer> ().GetAlpha () + 0.2f);
-
-        GameObject.Find ("T1").GetComponent<CanvasRenderer> ().SetAlpha (GameObject.Find ("T1").GetComponent<CanvasRenderer> ().GetAlpha () + 0.2f);
-        GameObject.Find ("T2").GetComponent<CanvasRenderer> ().SetAlpha (GameObject.Find ("T2").GetComponent<CanvasRenderer> ().GetAlpha () + 0.2f);
-        GameObject.Find ("T3").GetComponent<CanvasRenderer> ().SetAlpha (GameObject.Find ("T3").GetComponent<CanvasRenderer> ().GetAlpha () + 0.2f);
-        GameObject.Find ("T4").GetComponent<CanvasRenderer> ().SetAlpha (GameObject.Find ("T4").GetComponent<CanvasRenderer> ().GetAlpha () + 0.2f);
-        GameObject.Find ("T6").GetComponent<CanvasRenderer> ().SetAlpha (GameObject.Find ("T6").GetComponent<CanvasRenderer> ().GetAlpha () + 0.2f);
-        GameObject.Find ("T7").GetComponent<CanvasRenderer> ().SetAlpha (GameObject.Find ("T7").GetComponent<CanvasRenderer> ().GetAlpha () + 0.2f);
-        GameObject.Find ("NameBoxText").GetComponent<CanvasRenderer> ().SetAlpha (GameObject.Find ("NameBoxText").GetComponent<CanvasRenderer> ().GetAlpha () + 0.2f);
-
-        GameObject.Find ("NameBox").GetComponent<Button> ().enabled = true;
-        GameObject.Find ("Skip").GetComponent<Button> ().enabled = true;
-        GameObject.Find ("Auto").GetComponent<Button> ().enabled = true;
-        GameObject.Find ("SpeedUp").GetComponent<Button> ().enabled = true;
-        GameObject.Find ("SpeedDown").GetComponent<Button> ().enabled = true;
-        GameObject.Find ("Load").GetComponent<Button> ().enabled = true;
-        GameObject.Find ("Menu").GetComponent<Button> ().enabled = true;
-        GameObject.Find ("NameBox").GetComponent<Button> ().enabled = true;
-    }
-
-    public void textboxDisappear () {
-        GameObject.Find ("NameBox").GetComponent<Button> ().enabled = false;
-        GameObject.Find ("Skip").GetComponent<Button> ().enabled = false;
-        GameObject.Find ("Auto").GetComponent<Button> ().enabled = false;
-        GameObject.Find ("SpeedUp").GetComponent<Button> ().enabled = false;
-        GameObject.Find ("SpeedDown").GetComponent<Button> ().enabled = false;
-        GameObject.Find ("Load").GetComponent<Button> ().enabled = false;
-        GameObject.Find ("Menu").GetComponent<Button> ().enabled = false;
-        GameObject.Find ("NameBox").GetComponent<Button> ().enabled = false;
-
-        GameObject.Find ("UI_Panel").GetComponent<CanvasRenderer> ().SetAlpha (0.00f);
-        GameObject.Find ("Skip").GetComponent<CanvasRenderer> ().SetAlpha (0.00f);
-        GameObject.Find ("Auto").GetComponent<CanvasRenderer> ().SetAlpha (0.00f);
-        GameObject.Find ("SpeedUp").GetComponent<CanvasRenderer> ().SetAlpha (0.00f);
-        GameObject.Find ("SpeedDown").GetComponent<CanvasRenderer> ().SetAlpha (0.00f);
-        GameObject.Find ("Load").GetComponent<CanvasRenderer> ().SetAlpha (0.00f);
-        GameObject.Find ("Menu").GetComponent<CanvasRenderer> ().SetAlpha (0.00f);
-        GameObject.Find ("NextPage").GetComponent<CanvasRenderer> ().SetAlpha (0.00f);
-        GameObject.Find ("T1").GetComponent<CanvasRenderer> ().SetAlpha (0.00f);
-        GameObject.Find ("T2").GetComponent<CanvasRenderer> ().SetAlpha (0.00f);
-        GameObject.Find ("T3").GetComponent<CanvasRenderer> ().SetAlpha (0.00f);
-        GameObject.Find ("T4").GetComponent<CanvasRenderer> ().SetAlpha (0.00f);
-        GameObject.Find ("T6").GetComponent<CanvasRenderer> ().SetAlpha (0.00f);
-        GameObject.Find ("T7").GetComponent<CanvasRenderer> ().SetAlpha (0.00f);
-        GameObject.Find ("NameBox").GetComponent<CanvasRenderer> ().SetAlpha (0.00f);
-        GameObject.Find ("NameBoxText").GetComponent<CanvasRenderer> ().SetAlpha (0.00f);
-    }
-
-    // TextBox's Character Slots
-    public void charDisplay (int charOn) {
-        // 0 = 1on,2off, 1 = 1off,2on, 2 = 1on, 2on, 3 = 1off, 2off
-        switch (charOn) {
-            case 0:
-                charAppear (1);
-                charDisappear (2);
-                Controller.CharOn = 0;
-                break;
-            case 1:
-                charDisappear (1);
-                charAppear (2);
-                Controller.CharOn = 1;
-                break;
-            case 2:
-                charAppear (1);
-                charAppear (2);
-                Controller.CharOn = 2;
-                break;
-            case 3:
-                charDisappear (1);
-                charDisappear (2);
-                Controller.CharOn = 3;
-                break;
+        //Get UI_Panel's and all children's CanvasRenderer
+        foreach (CanvasRenderer renderer in UIPanel.GetComponentsInChildren<CanvasRenderer> ()) {
+            renderer.SetAlpha (1f);
+            //Get children's children's CanvasRenderer
+            renderer.GetComponentInChildren<CanvasRenderer> ().SetAlpha (1f);
+        }
+        foreach (Button btn in UIPanel.GetComponentsInChildren<Button> ()) {
+            btn.enabled = true;
         }
     }
 
+    /**
+     * Textbox and all it's elements disappear.
+     */
+    public void textboxDisappear () {
+        foreach (Button btn in UIPanel.GetComponentsInChildren<Button> ()) {
+            btn.enabled = false;
+        }
+        foreach (CanvasRenderer renderer in UIPanel.GetComponentsInChildren<CanvasRenderer> ()) {
+            renderer.SetAlpha (0f);
+            renderer.GetComponentInChildren<CanvasRenderer> ().SetAlpha (0f);
+        }
+    }
+
+    // TextBox's Character Slots
+    public void charDisplay (string charOn) {
+        // 0 = 1on,2off, 1 = 1off,2on, 2 = 1on, 2on, 3 = 1off, 2off
+        switch (charOn) {
+            case "1":
+                charAppear (1);
+                charDisappear (2);
+                controller.CharOn = 0;
+                break;
+            case "2":
+                charDisappear (1);
+                charAppear (2);
+                controller.CharOn = 1;
+                break;
+            case "both":
+                charAppear (1);
+                charAppear (2);
+                controller.CharOn = 2;
+                break;
+            case "none":
+                charDisappear (1);
+                charDisappear (2);
+                controller.CharOn = 3;
+                break;
+        }
+    }
     public void charAppear (int i) {
         GameObject.Find ("Char" + i).GetComponent<CanvasRenderer> ().SetAlpha (1f);
     }
-
     public void charDisappear (int i) {
         GameObject.Find ("Char" + i).GetComponent<CanvasRenderer> ().SetAlpha (0f);
     }

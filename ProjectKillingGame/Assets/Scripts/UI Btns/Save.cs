@@ -26,6 +26,8 @@ public class Save : MonoBehaviour {
     GameObject delBtn;
     public bool firstbuttoncreated = false;
 
+    public UIManager UIManager;
+
     private void Awake()
     {
         btnBG = new GameObject("SaveFileBG");
@@ -53,7 +55,7 @@ public class Save : MonoBehaviour {
         BtnInst.name = "Savefile(Clone)" + BtnInst.GetComponent<SaveFile>().savefileindex; //rename each instance
         delInst.name = "DeleteBtn(Clone)" + BtnInst.GetComponent<SaveFile>().savefileindex; //rename each instance
 
-        BGInst.AddComponent<Button>().onClick.AddListener(() => { control.confirmationWindow(); control.setSelectedSave(BtnInst.GetComponent<SaveFile>().savefileindex); });
+        BGInst.AddComponent<Button>().onClick.AddListener(() => { UIManager.confirmationWindow(); control.setSelectedSave(BtnInst.GetComponent<SaveFile>().savefileindex); });
 
         // change position of BG within content area
         BGimg.rectTransform.position = BGimg.rectTransform.position + new Vector3(-10f, 150f - 150 * c, 0f);
@@ -63,7 +65,7 @@ public class Save : MonoBehaviour {
 
         Button button = BtnInst.AddComponent<Button>();
         BtnInst.transform.SetParent(BGInst.transform, false); //attach to btnBG
-        BtnInst.GetComponent<Button>().onClick.AddListener(() => { control.confirmationWindow(); control.setSelectedSave(BtnInst.GetComponent<SaveFile>().savefileindex); });
+        BtnInst.GetComponent<Button>().onClick.AddListener(() => { UIManager.confirmationWindow(); control.setSelectedSave(BtnInst.GetComponent<SaveFile>().savefileindex); });
 
         saveImg.rectTransform.position = saveImg.rectTransform.position + new Vector3(-120f, 0f, 0f);
 
