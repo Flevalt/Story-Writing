@@ -6,8 +6,6 @@ public class Items : MonoBehaviour {
 
     private string[] itemArray; //item Names
     private Sprite[] itemSprites; //item Sprites
-    public Sprite s1;
-    public Sprite s2;
 
     void Awake()
     {
@@ -15,11 +13,11 @@ public class Items : MonoBehaviour {
         itemSprites = new Sprite[200];
         itemArray[0] = "Coins";
         itemArray[1] = "Globberus Maximus";
-        itemArray[2] = "Colt .357";
+        itemArray[2] = "Strange Gun";
 
-        itemSprites[0] = s1;
-        itemSprites[1] = s2;
-        itemSprites[2] = s1;
+        itemSprites[0] = Resources.Load<Sprite>("Sprites/Items/f1");
+        itemSprites[1] = Resources.Load<Sprite>("Sprites/Items/f1");
+        itemSprites[2] = Resources.Load<Sprite>("Sprites/Items/XGun");
     }
 
     public string getItemName(int i)

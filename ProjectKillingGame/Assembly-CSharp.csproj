@@ -61,7 +61,7 @@
      <Compile Include="Assets\Scripts\Audio\SoundContainer.cs" />
      <Compile Include="Assets\Scripts\Audio\VoiceSlider.cs" />
      <Compile Include="Assets\Scripts\Controller.cs" />
-     <Compile Include="Assets\Scripts\inspection.cs" />
+     <Compile Include="Assets\Scripts\Inspection.cs" />
      <Compile Include="Assets\Scripts\Items.cs" />
      <Compile Include="Assets\Scripts\Logic\TitleWrite.cs" />
      <Compile Include="Assets\Scripts\MenuClicks.cs" />

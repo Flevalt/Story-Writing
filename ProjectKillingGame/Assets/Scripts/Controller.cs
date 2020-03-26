@@ -13,12 +13,13 @@ public class Controller : MonoBehaviour {
     /**
      * Public Manager Objects
      */
+    public GameObject namebox;
     public GameObject nameboxText;
     public TextBox textbox;
     public UIManager UIManager;
     public Load LoadMenu;
     public Novel novel;
-    public inspection inspection;
+    public Inspection inspection;
     public TitleWrite titlewrite;
 
     /**
@@ -45,7 +46,7 @@ public class Controller : MonoBehaviour {
     void Start () {
         gameMode = "reading";
         //Only load title if at beginning of a chapter
-        if (novel.getCurrentLine () == -1) {
+        if (novel.currentChapter == 0 && novel.currentLine == -1) {
             titlewrite.fadeInTitle ("~ Prologue ~", Color.white, 0.025f);
         }
     }
@@ -62,7 +63,47 @@ public class Controller : MonoBehaviour {
     }
     // Sabrina wakes up in her room.
     public void startCh1 () {
-        DisplayCh1 ();
+        runDisplay = 1;
+
+        if (Ch1VisualsLoaded == false) {
+            UIManager.charAppear (2);
+            Ch1VisualsLoaded = true;
+            changeNameBoxText ("Sabrina");
+            UIManager.changeBG ("SabrinasRoom");
+
+            currentBG = 2;
+            CharOn = 1;
+        }
+
+        runDisplay = 0;
+    }
+    // Inspection Mode of Ch 1.1.1
+    public void startCh1_1_1 () {
+        runDisplay = 1;
+
+        if (novel.currentLine == 8 && GameObject.Find ("sink") == null && gameMode == "reading") {
+           inspection.startInspectionMode ();
+            GameObject.Find ("TutorialPanel").GetComponent<RectTransform> ().Translate (new Vector2 (675f, 0f));
+            GameObject.Find ("CloseTutorialPanel").GetComponent<Button> ().onClick.AddListener (() => {
+                GameObject.Find ("TutorialPanel").GetComponent<RectTransform> ().Translate (new Vector2 (-675f, 0f));
+                inspection.createInspectionElements ();
+                inspection.disableNavForInspectionElems ();
+            });
+        }
+
+        runDisplay = 0;
+    }
+    public void startCh1_2 () {
+        runDisplay = 1;
+        runDisplay = 0;
+    }
+    public void startCh1_3 () {
+        runDisplay = 1;
+        runDisplay = 0;
+    }
+    public void startCh1_4 () {
+        runDisplay = 1;
+        runDisplay = 0;
     }
     // Sabrina interacts with the door.
     public void startCh1_1 () {
@@ -80,7 +121,7 @@ public class Controller : MonoBehaviour {
         titlewrite.hideTitle ();
 
         //BG appears
-        if (novel.savedIndex == 1 && novel.getCurrentLine () == -1) {
+        if (novel.currentChapter == 0 && novel.currentLine == -1) {
             UIManager.changeBG ("Prologue");
             currentBG = 1;
         }
@@ -88,61 +129,8 @@ public class Controller : MonoBehaviour {
         runDisplay = 0;
     }
 
-    void DisplayCh1 () {
-        runDisplay = 1;
-        if (novel.getCurrentLine () == 8) {
-            UIManager.charAppear (2);
-        }
-
-        if (novel.getCurrentLine () == 7 && Ch1VisualsLoaded == false) {
-            Ch1VisualsLoaded = true;
-            // Change Namebox
-            changeNameBoxText ("Sabrina");
-            // Jump to 2nd BG
-            UIManager.changeBG ("SabrinasRoom");
-
-            currentBG = 2;
-            CharOn = 1;
-        }
-
-        if (novel.getCurrentLine () == 16 && GameObject.Find ("sink") == null && gameMode == "reading") {
-            //enable inspection mode
-            gameMode = "inspection";
-            //disable writing visuals
-            UIManager.charDisappear (2);
-            stopWriting ();
-            UIManager.textboxDisappear ();
-
-            GameObject.Find ("InspectionElements").GetComponent<RectTransform> ().localPosition = new Vector2 (0f, 0f);
-            GameObject.Find ("TutorialPanel").GetComponent<RectTransform> ().Translate (new Vector2 (675f, 0f));
-            GameObject.Find ("CloseTutorialPanel").GetComponent<Button> ().onClick.AddListener (() => {
-                GameObject.Find ("TutorialPanel").GetComponent<RectTransform> ().Translate (new Vector2 (-675f, 0f));
-                inspection.instObject ("sink", 300f, -50f, 80f, 70f, 1, 1); //sink
-                inspection.instObject ("toilet", 300f, -200f, 80f, 70f); //toillet
-                inspection.instObject ("bed", -220f, -180f, 240f, 120f); //bed
-                inspection.instObject ("shaft", -30f, 225f, 80f, 50f, 3, 2, 1); //ventilation shaft
-                inspection.instStoryObject ("door", 220f, -30f, 120f, 320f); //door
-                inspection.instObject ("screen", 90f, 60f, 100f, 100f, 2, 0); //screen
-                inspection.instObject ("lights", 150f, 200f, 250f, 70f); //lights
-                inspection.instObject ("chair", -20f, -100f, 80f, 90f); //chair
-                inspection.disableNavForInspectionElems();
-            });
-        }
-
-        runDisplay = 0;
-    }
-
-    public void loadSabrinaRoom () {
-        UIManager.changeBG ("SabrinasRoom");
-        UIManager.charDisplay ("none");
-        gameMode = "inspection";
-        stopWriting ();
-        UIManager.textboxDisappear ();
-        GameObject.Find ("InspectionElements").GetComponent<RectTransform> ().localPosition = new Vector2 (0f, 0f);
-    }
-
     IEnumerator DisplayCh1_1 () {
-        while (GameObject.Find ("NameBox").GetComponent<CanvasRenderer> ().GetAlpha () != 1f) {
+        while (namebox.GetComponent<CanvasRenderer> ().GetAlpha () != 1f) {
             UIManager.textboxAppear ();
             yield return new WaitForSeconds (0.08f);
         }

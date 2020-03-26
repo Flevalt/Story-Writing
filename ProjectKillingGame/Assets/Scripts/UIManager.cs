@@ -8,21 +8,34 @@ using UnityEngine.UI;
  */
 
 public class UIManager : MonoBehaviour {
-    public GameObject DecisionBox;
-    public GameObject Pick1, Pick2;
 
-    public GameObject ItemObtainedBox;
+    // INSPECTION Elements
+    public Inspection inspection;
+    // Decision Window
+    public GameObject DecisionWindow, ChoiceBtn1, ChoiceBtn2;
+    // Decision Window Text
+    public GameObject ChoiceTitleText, ChoiceBtn1Text, ChoiceBtn2Text;
+    // Item Obtained Window
+    public GameObject ItemObtainedWindow, YouFound, YouFoundText;
+    public Image FoundItem;
+
     public Controller controller;
     public Novel novel;
     public Camera MainCam;
     public GameObject Background;
-
+    public TextBox textbox;
     public GameObject UIPanel;
+
+    public GameObject GameMenu;
+    public GameObject Compendium;
+    public GameObject StatusOverview;
+    public GameObject Map;
+    public GameObject Settings;
 
     Color erase = new Color (0f, 0f, 0f, 1f); //color to erase alpha
 
     void Start () {
-        if (novel.getCurrentLine () != -1) { //While not at beginning of Chapter
+        if (novel.currentLine != -1) { //While not at beginning of Chapter
             UIPanel.GetComponent<CanvasRenderer> ().SetAlpha (1f);
             charDisplay ("both");
         } else { //While at beginning of chapter
@@ -100,31 +113,105 @@ public class UIManager : MonoBehaviour {
     public void confirmationWindow () {
         openDecisionWindow ();
         changeDecisionText ("Confirm Save?", "Yes", "No");
-        Pick1.GetComponent<Button> ().onClick.AddListener (() => { controller.LoadMenu.loadData (controller.selectedSave); closeDecisionWindow (); });
-        Pick2.GetComponent<Button> ().onClick.AddListener (() => { closeDecisionWindow (); });
+        ChoiceBtn1.GetComponent<Button> ().onClick.AddListener (() => { controller.LoadMenu.loadData (controller.selectedSave); closeDecisionWindow (); });
+        ChoiceBtn2.GetComponent<Button> ().onClick.AddListener (() => { closeDecisionWindow (); });
     }
     public void openDecisionWindow () {
-        DecisionBox.SetActive (true);
-        DecisionBox.GetComponentInChildren<RectTransform> ().localPosition = new Vector2 (0f, 0f);
+        DecisionWindow.SetActive (true);
+        hideDecisionWindow ();
+        DecisionWindow.GetComponentInChildren<RectTransform> ().localPosition = new Vector2 (0f, 0f);
+        StartCoroutine (fadeInDecisionWindow ());
     }
     public void closeDecisionWindow () {
-        DecisionBox.GetComponent<RectTransform> ().localPosition = new Vector2 (1000f, 0f);
-        DecisionBox.SetActive (false);
+        DecisionWindow.GetComponent<RectTransform> ().localPosition = new Vector2 (1000f, 0f);
+        DecisionWindow.SetActive (false);
+    }
+    public void hideDecisionWindow () {
+        foreach (CanvasRenderer canvas in DecisionWindow.GetComponentsInChildren<CanvasRenderer> ()) {
+            canvas.SetAlpha (0f);
+        }
+    }
+    /**
+     * Fades in Decision Window.
+     */
+    public IEnumerator fadeInDecisionWindow () {
+        //Choose decision based on id
+        switch (controller.decision) {
+            case 1: //weapon-pick decision
+                changeDecisionText ("Pick up the gun?", "Let's take it.", "Leave it there.");
+                // Change listeners
+                ChoiceBtn1.GetComponent<Button> ().onClick.AddListener (() => {
+                    inspection.itemFound3 = 1;
+                    closeDecisionWindow ();
+                    inspection.changeListener (inspection.lastClicked);
+                    openItemObtainedWindow ();
+                });
+                ChoiceBtn2.GetComponent<Button> ().onClick.AddListener (() => {
+                    inspection.itemFound3 = 0;
+                    closeDecisionWindow ();
+                    inspection.InspectionElements.GetComponent<RectTransform> ().localPosition = new Vector2 (0f, 0f);
+                });
+                break;
+        }
+
+        for (int k = 0; k < 5; k++) {
+            foreach (CanvasRenderer canvas in DecisionWindow.GetComponentsInChildren<CanvasRenderer> ()) {
+                canvas.SetAlpha (canvas.GetAlpha () + 0.2f);
+            }
+            yield return new WaitForSeconds (0.08f);
+        }
     }
     /**
      * Changes the text for the Decision Window.
      */
     public void changeDecisionText (string title, string choice1, string choice2) {
-        GameObject.Find ("2DecisionText").GetComponent<Text> ().text = title; //"Leave the Game?"
-        GameObject.Find ("choice1").GetComponent<Text> ().text = choice1; //"Return to Main Menu."
-        GameObject.Find ("choice2").GetComponent<Text> ().text = choice2; //"Return to Desktop."
+        ChoiceTitleText.GetComponent<Text> ().text = title; //"Leave the Game?"
+        ChoiceBtn1Text.GetComponent<Text> ().text = choice1; //"Return to Main Menu."
+        ChoiceBtn2Text.GetComponent<Text> ().text = choice2; //"Return to Desktop."
     }
-    // ItemObtained Window
+
+    /**
+     * ITEM OBTAINED WINDOW
+     */
     public void openItemObtainedWindow () {
-        ItemObtainedBox.SetActive (true);
+        ItemObtainedWindow.SetActive (true);
+        ItemObtainedWindow.GetComponent<RectTransform> ().localPosition = new Vector2 (0f, 19f);
+        StartCoroutine (itemObtainedAppear (inspection.itemId));
     }
+    public IEnumerator itemObtainedAppear (int itemID) {
+
+        //Change Item image & text before displaying
+        FoundItem.sprite = textbox.items.getItemSprite (itemID);
+        YouFoundText.GetComponent<Text> ().text = "You found " + textbox.items.getItemName (itemID);
+
+        YouFoundText.GetComponent<CanvasRenderer> ().SetAlpha (1f);
+        //Display elements in the following order
+        for (int k = 0; k < 5; k++) {
+            foreach (CanvasRenderer canvas in ItemObtainedWindow.GetComponentsInChildren<CanvasRenderer> ()) {
+                canvas.SetAlpha (canvas.GetAlpha () + 0.2f);
+            }
+            yield return new WaitForSeconds (0.08f);
+        }
+
+        yield return new WaitForSeconds (2f);
+
+        for (int k = 0; k < 5; k++) {
+            foreach (CanvasRenderer canvas in ItemObtainedWindow.GetComponentsInChildren<CanvasRenderer> ()) {
+                canvas.SetAlpha (canvas.GetAlpha () - 0.2f);
+                foreach (CanvasRenderer canvas2 in canvas.GetComponentsInChildren<CanvasRenderer> ()) {
+                    canvas2.SetAlpha (canvas2.GetAlpha () - 0.2f);
+                }
+            }
+            yield return new WaitForSeconds (0.08f);
+        }
+        ItemObtainedWindow.SetActive (false);
+        ItemObtainedWindow.GetComponent<RectTransform> ().localPosition = new Vector2 (1000f, 0f);
+        inspection.InspectionElements.GetComponent<RectTransform> ().localPosition = new Vector2 (0f, 0f);
+    }
+    // Called during the beginning of the game in the Inspection class
     public void closeItemObtainedWindow () {
-        ItemObtainedBox.SetActive (false);
+        ItemObtainedWindow.SetActive (false);
+        ItemObtainedWindow.GetComponent<RectTransform> ().localPosition = new Vector2 (1000f, 0f);
     }
 
     /**
@@ -190,7 +277,7 @@ public class UIManager : MonoBehaviour {
         GameObject.Find ("Char" + i).GetComponent<CanvasRenderer> ().SetAlpha (0f);
     }
 
-    public void CharOutgrey (int i) {
+    public void charOutgrey (int i) {
         // Char Outgrey while present but not talking
         GameObject.Find ("Char" + i).GetComponent<CanvasRenderer> ().SetColor (new Color (0.2f, 0.2f, 0.2f));
     }
@@ -218,46 +305,46 @@ public class UIManager : MonoBehaviour {
 
     public void showGameMenu () {
         menuOpen = true;
-        GameObject.Find ("GameMenu").GetComponentInChildren<RectTransform> ().position = new Vector2 (340f, 250f);
+        GameMenu.GetComponentInChildren<RectTransform> ().position = new Vector2 (340f, 250f);
     }
     public void hideGameMenu () {
-        GameObject.Find ("GameMenu").GetComponentInChildren<RectTransform> ().position = new Vector2 (2000f, 0f);
+        GameMenu.GetComponentInChildren<RectTransform> ().position = new Vector2 (2000f, 0f);
         menuOpen = false;
     }
 
     public void showCompendium () {
-        GameObject.Find ("Compendium").GetComponentInChildren<RectTransform> ().position = new Vector2 (340f, 250f);
+        Compendium.GetComponentInChildren<RectTransform> ().position = new Vector2 (340f, 250f);
         compendiumOpen = true;
     }
     public void hideCompendium () {
-        GameObject.Find ("Compendium").GetComponentInChildren<RectTransform> ().position = new Vector2 (2000f, 0f);
+        Compendium.GetComponentInChildren<RectTransform> ().position = new Vector2 (2000f, 0f);
         setCompOpen (false);
     }
 
     public void showStatus () {
-        GameObject.Find ("StatusOverview").GetComponentInChildren<RectTransform> ().position = new Vector2 (340f, 250f);
+        StatusOverview.GetComponentInChildren<RectTransform> ().position = new Vector2 (340f, 250f);
         statusOpen = true;
     }
     public void hideStatus () {
-        GameObject.Find ("StatusOverview").GetComponentInChildren<RectTransform> ().position = new Vector2 (2000f, 0f);
+        StatusOverview.GetComponentInChildren<RectTransform> ().position = new Vector2 (2000f, 0f);
         setStatOpen (false);
     }
 
     public void showMap () {
-        GameObject.Find ("Map").GetComponentInChildren<RectTransform> ().position = new Vector2 (340f, 250f);
+        Map.GetComponentInChildren<RectTransform> ().position = new Vector2 (340f, 250f);
         mapOpen = true;
     }
     public void hideMap () {
-        GameObject.Find ("Map").GetComponentInChildren<RectTransform> ().position = new Vector2 (2000f, 0f);
+        Map.GetComponentInChildren<RectTransform> ().position = new Vector2 (2000f, 0f);
         setMapOpen (false);
     }
 
     public void showSettings () {
-        GameObject.Find ("Settings").GetComponentInChildren<RectTransform> ().position = new Vector2 (340f, 250f);
+        Settings.GetComponentInChildren<RectTransform> ().position = new Vector2 (340f, 250f);
         settingsOpen = true;
     }
     public void hideSettings () {
-        GameObject.Find ("Settings").GetComponentInChildren<RectTransform> ().position = new Vector2 (2000f, 0f);
+        Settings.GetComponentInChildren<RectTransform> ().position = new Vector2 (2000f, 0f);
         setSettingsOpen (false);
     }
 

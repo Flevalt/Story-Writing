@@ -159,8 +159,8 @@ public class Save : MonoBehaviour {
                 PlayerPrefs.SetInt("Char1" + 1 * loopcount, control.getChar1());
                 PlayerPrefs.SetInt("Char2" + 1 * loopcount, control.getChar2());
                 PlayerPrefs.SetInt("CharOn" + 1 * loopcount, control.getCharOn());
-                PlayerPrefs.SetInt("currentIndex" + 1 * loopcount, novel.savedIndex);
-                PlayerPrefs.SetInt("currentLine" + 1 * loopcount, novel.getCurrentLine());
+                PlayerPrefs.SetFloat("currentIndex" + 1 * loopcount, novel.currentChapter);
+                PlayerPrefs.SetInt("currentLine" + 1 * loopcount, novel.currentLine);
                 PlayerPrefs.Save();
                 singlesave.GetComponent<SaveFile>().setAll(loopcount);
                 loopcount = 1;

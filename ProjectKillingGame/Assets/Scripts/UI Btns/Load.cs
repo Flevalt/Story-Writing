@@ -9,7 +9,7 @@ public class Load : MonoBehaviour {
     public SaveFile savefile;
     public Sprite savefilesprite;
     public GameObject content;
-    public inspection inspect;
+    public Inspection inspection;
     public Sprite Noch;
     public Sprite ch1;
     public Sprite ch2;
@@ -156,9 +156,9 @@ public class Load : MonoBehaviour {
             PlayerPrefs.SetInt("Char1" + c, control.getChar1());
             PlayerPrefs.SetInt("Char2" + c, control.getChar2());
             PlayerPrefs.SetInt("CharOn" + c, control.getCharOn());
-            PlayerPrefs.SetInt("currentIndex" + c, novel.savedIndex);
-            PlayerPrefs.SetInt("currentLine" + c, novel.getCurrentLine());
-            PlayerPrefs.SetInt("itemFound1" + c, inspect.itemFound1);
+            PlayerPrefs.SetFloat("currentIndex" + c, novel.currentChapter);
+            PlayerPrefs.SetInt("currentLine" + c, novel.currentLine);
+            PlayerPrefs.SetInt("itemFound1" + c, inspection.itemFound1);
             PlayerPrefs.Save();
             //Set savefile-sprite
             GameObject.Find("Savefile(inst)" + c).GetComponent<Image>().sprite = ch1;
@@ -275,11 +275,11 @@ public class Load : MonoBehaviour {
         //UIManager.charDisplay(PlayerPrefs.GetInt("CharOn" + index));
 
         //load current Chapter
-        GameObject.Find("NovelStorage").GetComponent<Novel>().savedIndex = PlayerPrefs.GetInt("currentIndex" + index);
+        GameObject.Find("NovelStorage").GetComponent<Novel>().currentChapter = PlayerPrefs.GetInt("currentIndex" + index);
 
         //load current Paragraph
-        GameObject.Find("NovelStorage").GetComponent<Novel>().setCurrentLine(PlayerPrefs.GetInt("currentLine" + index));
-        GameObject.Find("Textbox").GetComponent<Text>().text = GameObject.Find("NovelStorage").GetComponent<Novel>().getCurrentCh(PlayerPrefs.GetInt("currentIndex" + index))[PlayerPrefs.GetInt("currentLine" + index)];
+        GameObject.Find("NovelStorage").GetComponent<Novel>().currentLine = PlayerPrefs.GetInt("currentLine" + index);
+        GameObject.Find("Textbox").GetComponent<Text>().text = GameObject.Find("NovelStorage").GetComponent<Novel>().getChapter(PlayerPrefs.GetInt("currentIndex" + index))[PlayerPrefs.GetInt("currentLine" + index)];
         GameObject.Find("textwriter(Inst)").GetComponent<TextWrite>().setLoaded(true);
 
         //close LoadMenu
@@ -291,16 +291,18 @@ public class Load : MonoBehaviour {
         GameObject.Find("Scrollbar").GetComponent<Scrollbar>().interactable = false;
         GameObject.Find("Scrollbar").GetComponent<CanvasRenderer>().SetAlpha(0f);
 
-        //exchange inspect element listeners
+        //exchange inspection element listeners
         //TODO: Only load the objects during entering a room with such objects and NOT during loadData
-        inspect.instObject("sink", 300f, -50f, 80f, 70f, 1, 1); //sink
-        inspect.instObject("toilet", 300f, -200f, 80f, 70f); //toillet
-        inspect.instObject("bed", -220f, -180f, 240f, 120f); //bed
-        inspect.instObject("shaft", -30f, 225f, 80f, 50f); //ventilation shaft
-        inspect.instObject("door", 220f, -30f, 120f, 320f); //door
-        inspect.instObject("screen", 90f, 60f, 100f, 100f, 1, 0); //screen
-        inspect.instObject("lights", 150f, 200f, 250f, 70f); //lights
-        inspect.instObject("chair", -20f, -100f, 80f, 90f); //chair
+        inspection.instStoryObject ("1_1_1_door", 220f, -30f, 120f, 320f); //door
+
+        inspection.instDecisionObject ("1_1_1_shaft", -30f, 225f, 80f, 50f, 3, 2, 1); //ventilation shaft
+        inspection.instItemFoundObject ("1_1_1_screen", 90f, 60f, 100f, 100f, 2, 0); //screen
+        inspection.instItemFoundObject ("1_1_1_sink", 300f, -50f, 80f, 70f, 1, 1); //sink
+
+        inspection.instObject ("1_1_1_toilet", 300f, -200f, 80f, 70f); //toilet
+        inspection.instObject ("1_1_1_bed", -220f, -180f, 240f, 120f); //bed
+        inspection.instObject ("1_1_1_lights", 150f, 200f, 250f, 70f); //lights
+        inspection.instObject ("1_1_1_chair", -20f, -100f, 80f, 90f); //chair
 
         for (int j = 1; j < savefiles.Length + 1; j++)
             {
@@ -308,23 +310,23 @@ public class Load : MonoBehaviour {
                 {
                     string name = "";
                     if(j == 1) {
-                        name = "sink";
+                        name = "1_1_1_sink";
                     } else if(j == 2) {
-                        name = "toilet";
+                        name = "1_1_1_toilet";
                     } else if(j == 3) {
-                        name = "bed";
+                        name = "1_1_1_bed";
                     } else if(j == 4) {
-                        name = "shaft";
+                        name = "1_1_1_shaft";
                     } else if(j == 5) {
-                        name = "door";
+                        name = "1_1_1_door";
                     } else if(j == 6) {
-                        name = "screen";
+                        name = "1_1_1_screen";
                     } else if(j == 7) {
-                        name = "lights";
+                        name = "1_1_1_lights";
                     } else if(j == 8) {
-                        name = "chair";
+                        name = "1_1_1_chair";
                     }
-                    inspect.changeListener(name);
+                    inspection.changeListener(name);
                 }
             }
     }

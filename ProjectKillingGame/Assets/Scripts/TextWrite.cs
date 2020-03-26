@@ -37,29 +37,55 @@ public class TextWrite : MonoBehaviour {
     /**
      * WRITING FUNCTIONS
      */
-    //normal writing function but without increasing linecount
-    public void attemptInspectionWriting () {
-        writeCheck = textbox.txtWriterNr;
-        setupWriting ();
-        StartCoroutine (ReadChapter (novel.getCurrentLine (), novel.getCurrentCh (novel.savedIndex)));
-    }
 
     public void attemptWriting () {
         if (run == false) //Check every frame if in middle of chapter, otherwise do not read
         {
+            Debug.Log ("AE: " + novel.currentLine + "; " + novel.currentChapter);
+            novel.progressNovel (); //if at end of chapter, change line and chapter number inside the Novel.
+            Debug.Log ("AE2: " + novel.currentLine + "; " + novel.currentChapter);
             writeCheck = textbox.txtWriterNr;
             setupWriting ();
-            StartCoroutine (ReadChapter (novel.getCurrentLine () + 1, novel.getCurrentCh (novel.savedIndex))); //reads chapter lines with selected textboxTextField, current line and current chapter content
-            novel.setCurrentLine (novel.getCurrentLine () + 1);
+            novel.currentLine++;
+            StartCoroutine (ReadChapter (novel.getChapter (novel.currentChapter))); //reads chapter lines with selected textboxTextField, current line and current chapter content
         }
+    }
+
+    IEnumerator ReadChapter (string[] currCh) {
+        run = true;
+
+        Debug.Log ("DE: " + novel.currentLine + "; " + novel.currentChapter);
+        string str = currCh[novel.currentLine];
+        if (controller.gameMode == "reading") {
+            for (int i = 0; i < str.Length; i++) {
+                if (loaded == false && loadedNextLine == false && (textbox.txtWriterNr == writeCheck)) // If load is pressed during readChapter, cancel readChapter
+                {
+                    textboxTextField.text = textboxTextField.text + str[i];
+                    yield return new WaitForSeconds (f);
+                }
+            }
+        }
+
+        if (controller.gameMode == "reading") {
+            GameObject.Find ("NextPage").GetComponent<CanvasRenderer> ().SetAlpha (GameObject.Find ("NextPage").GetComponent<CanvasRenderer> ().GetAlpha () + 1f);
+        }
+        run = false;
+        loaded = false; // Reset loaded at end of the writing sequence
+    }
+
+    //normal writing function but without increasing linecount
+    public void attemptInspectionWriting () {
+        writeCheck = textbox.txtWriterNr;
+        setupWriting ();
+        StartCoroutine (ReadChapter (novel.getChapter (novel.currentChapter)));
     }
 
     public void attemptAuto () {
         if (run == false && skip.autoOn == true && skip.skipOn == false) //Check every frame if in middle of chapter, otherwise do not read
         {
             setupWriting ();
-            StartCoroutine (AutoReadChapter (novel.getCurrentLine () + 1, novel.getCurrentCh (novel.savedIndex))); //reads chapter lines with selected textboxTextField, current line and current chapter content
-            novel.setCurrentLine (novel.getCurrentLine () + 1);
+            novel.currentLine++;
+            StartCoroutine (AutoReadChapter (novel.getChapter (novel.currentChapter))); //reads chapter lines with selected textboxTextField, current line and current chapter content
         }
     }
 
@@ -67,8 +93,8 @@ public class TextWrite : MonoBehaviour {
         if (run == false) //Check every frame if in middle of chapter, otherwise do not read
         {
             setupWriting ();
-            StartCoroutine (SkipReadChapter (novel.getCurrentLine () + 1, novel.getCurrentCh (novel.savedIndex))); //reads chapter lines with selected textboxTextField, current line and current chapter content
-            novel.setCurrentLine (novel.getCurrentLine () + 1);
+            novel.currentLine++;
+            StartCoroutine (SkipReadChapter (novel.getChapter (novel.currentChapter))); //reads chapter lines with selected textboxTextField, current line and current chapter content
         }
     }
 
@@ -78,13 +104,13 @@ public class TextWrite : MonoBehaviour {
         textboxTextField.text = "";
     }
 
-    IEnumerator SkipReadChapter (int currLine, string[] currCh) {
+    IEnumerator SkipReadChapter (string[] currCh) {
         skippin = true;
         run = true;
-        if (novel.getCurrentLine () == -1) {
+        if (novel.currentLine == -1) {
             yield return new WaitForSeconds (1);
         }
-        string str = currCh[currLine];
+        string str = currCh[novel.currentLine];
         if (controller.gameMode == "reading") {
             for (int i = 0; i < str.Length; i++) {
                 if (loaded == false) // If load is pressed during readChapter, cancel readChapter
@@ -103,13 +129,13 @@ public class TextWrite : MonoBehaviour {
         skippin = false;
     }
 
-    IEnumerator AutoReadChapter (int currLine, string[] currCh) {
+    IEnumerator AutoReadChapter (string[] currCh) {
         autoin = true;
         run = true;
-        if (novel.getCurrentLine () == -1) {
+        if (novel.currentLine == -1) {
             yield return new WaitForSeconds (1);
         }
-        string str = currCh[currLine];
+        string str = currCh[novel.currentLine];
         if (controller.gameMode == "reading") {
             for (int i = 0; i < str.Length; i++) {
                 if (loaded == false) // If load is pressed during readChapter, cancel readChapter
@@ -128,29 +154,6 @@ public class TextWrite : MonoBehaviour {
         loaded = false; // Reset loaded at end of the writing sequence
         autoin = false;
         attemptAuto ();
-    }
-
-    IEnumerator ReadChapter (int currLine, string[] currCh) {
-        run = true;
-        if (novel.getCurrentLine () == -1) {
-            yield return new WaitForSeconds (1);
-        }
-        string str = currCh[currLine];
-        if (controller.gameMode == "reading") {
-            for (int i = 0; i < str.Length; i++) {
-                if (loaded == false && loadedNextLine == false && (textbox.txtWriterNr == writeCheck)) // If load is pressed during readChapter, cancel readChapter
-                {
-                    textboxTextField.text = textboxTextField.text + str[i];
-                    yield return new WaitForSeconds (f);
-                }
-            }
-        }
-
-        if (controller.gameMode == "reading") {
-            GameObject.Find ("NextPage").GetComponent<CanvasRenderer> ().SetAlpha (GameObject.Find ("NextPage").GetComponent<CanvasRenderer> ().GetAlpha () + 1f);
-        }
-        run = false;
-        loaded = false; // Reset loaded at end of the writing sequence
     }
 
     public void setRun (bool b) {
